@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--optional-->
+<!--
+	<key>.identifiers</key>
+	<dict>
+		<key>[an identifier]</key>
+		<dict>
+			<key>nodeAttributes</key>
+			...[values to override for this identifier]...
+			<key>inputAttributes</key>
+			<key>outputAttributes</key>
+		</dict>
+	</dict>
+-->
+	<!--required-->
+	<key>nodeAttributes</key>
+	<dict>
+		<key>name</key>
+		<string>Struct From Iterator</string>
+		<key>categories</key>
+		<array>
+			<string>Custom Patch</string>
+		</array>
+<!--
+		<key>copyright</key>
+		<string>Copyright [YEAR] [COMPANY]. All rights reserved.</string>
+-->
+		<key>description</key>
+		<string>This patch combines all results, computed inside an Iterator patch, into one array. Computed values should be dependant on the current iteration (otherwise, Iterator tries to be efficient and skips an iteration).</string>
+		<key>aliasNames</key>
+		<array>
+			<string></string>
+		</array>
+<!--
+	examples are automatically prepended with `file://localhost/Developer//Library/Quartz%20Composer/Examples/Patches//`, so it's not too useful to us..
+		<key>examples</key>
+		<array>
+			<string>example.qtz</string>
+		</array>
+-->
+	</dict>
+	<key>inputAttributes</key>
+	<dict>
+		<key>inputElement</key>
+		<dict>
+			<key>name</key>
+			<string>Element</string>
+			<key>description</key>
+			<string>Element of an array from current iteration</string>
+		</dict>
+        <key>inputIterations</key>
+		<dict>
+			<key>name</key>
+			<string>Iterations</string>
+			<key>description</key>
+			<string>Count of iterations</string>
+		</dict>
+	</dict>
+	<key>outputArray</key>
+	<dict>
+		<key>outputStructure</key>
+		<dict>
+			<key>name</key>
+			<string>Array</string>
+			<key>description</key>
+			<string>Array build from elements of all iterations</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

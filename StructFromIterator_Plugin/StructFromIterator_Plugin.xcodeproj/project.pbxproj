@@ -1,0 +1,313 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E9590799175E020F00DF4E4B /* StructFromIterator.xml in Resources */ = {isa = PBXBuildFile; fileRef = E9590793175E020F00DF4E4B /* StructFromIterator.xml */; };
+		E959079A175E020F00DF4E4B /* StructFromIterator.m in Sources */ = {isa = PBXBuildFile; fileRef = E9590794175E020F00DF4E4B /* StructFromIterator.m */; };
+		E959079B175E020F00DF4E4B /* StructFromIterator_PluginPrincipal.m in Sources */ = {isa = PBXBuildFile; fileRef = E9590796175E020F00DF4E4B /* StructFromIterator_PluginPrincipal.m */; };
+		E959079D175E021C00DF4E4B /* StructFromIterator_Plugin-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E959079C175E021C00DF4E4B /* StructFromIterator_Plugin-Info.plist */; };
+		E95907A0175E023F00DF4E4B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E959079E175E023F00DF4E4B /* InfoPlist.strings */; };
+		E9B399031757B05A00CBB75B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B399021757B05A00CBB75B /* Cocoa.framework */; };
+		E9B399051757B05A00CBB75B /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B399041757B05A00CBB75B /* Quartz.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E9590793175E020F00DF4E4B /* StructFromIterator.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = StructFromIterator.xml; path = StructFromIterator_Plugin/StructFromIterator.xml; sourceTree = SOURCE_ROOT; };
+		E9590794175E020F00DF4E4B /* StructFromIterator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StructFromIterator.m; path = StructFromIterator_Plugin/StructFromIterator.m; sourceTree = SOURCE_ROOT; };
+		E9590795175E020F00DF4E4B /* StructFromIterator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StructFromIterator.h; path = StructFromIterator_Plugin/StructFromIterator.h; sourceTree = SOURCE_ROOT; };
+		E9590796175E020F00DF4E4B /* StructFromIterator_PluginPrincipal.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StructFromIterator_PluginPrincipal.m; path = StructFromIterator_Plugin/StructFromIterator_PluginPrincipal.m; sourceTree = SOURCE_ROOT; };
+		E9590797175E020F00DF4E4B /* StructFromIterator_PluginPrincipal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StructFromIterator_PluginPrincipal.h; path = StructFromIterator_Plugin/StructFromIterator_PluginPrincipal.h; sourceTree = SOURCE_ROOT; };
+		E9590798175E020F00DF4E4B /* StructFromIterator_Plugin-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "StructFromIterator_Plugin-Prefix.pch"; path = "StructFromIterator_Plugin/StructFromIterator_Plugin-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		E959079C175E021C00DF4E4B /* StructFromIterator_Plugin-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "StructFromIterator_Plugin-Info.plist"; path = "StructFromIterator_Plugin/StructFromIterator_Plugin-Info.plist"; sourceTree = SOURCE_ROOT; };
+		E959079F175E023F00DF4E4B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = StructFromIterator_Plugin/en.lproj/InfoPlist.strings; sourceTree = SOURCE_ROOT; };
+		E9B398FF1757B05A00CBB75B /* StructFromIterator_Plugin.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StructFromIterator_Plugin.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9B399021757B05A00CBB75B /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		E9B399041757B05A00CBB75B /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E9B398FB1757B05A00CBB75B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9B399031757B05A00CBB75B /* Cocoa.framework in Frameworks */,
+				E9B399051757B05A00CBB75B /* Quartz.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E9B398F51757B05A00CBB75B = {
+			isa = PBXGroup;
+			children = (
+				E9B399061757B05A00CBB75B /* StructFromIterator_Plugin */,
+				E9B399011757B05A00CBB75B /* Frameworks */,
+				E9B399001757B05A00CBB75B /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E9B399001757B05A00CBB75B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E9B398FF1757B05A00CBB75B /* StructFromIterator_Plugin.plugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E9B399011757B05A00CBB75B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E9B399021757B05A00CBB75B /* Cocoa.framework */,
+				E9B399041757B05A00CBB75B /* Quartz.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E9B399061757B05A00CBB75B /* StructFromIterator_Plugin */ = {
+			isa = PBXGroup;
+			children = (
+				E9590793175E020F00DF4E4B /* StructFromIterator.xml */,
+				E9590794175E020F00DF4E4B /* StructFromIterator.m */,
+				E9590795175E020F00DF4E4B /* StructFromIterator.h */,
+				E9590796175E020F00DF4E4B /* StructFromIterator_PluginPrincipal.m */,
+				E9590797175E020F00DF4E4B /* StructFromIterator_PluginPrincipal.h */,
+				E9590798175E020F00DF4E4B /* StructFromIterator_Plugin-Prefix.pch */,
+				E9B399071757B05A00CBB75B /* Supporting Files */,
+			);
+			name = StructFromIterator_Plugin;
+			path = UnoffAPI_Plugin;
+			sourceTree = "<group>";
+		};
+		E9B399071757B05A00CBB75B /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E959079E175E023F00DF4E4B /* InfoPlist.strings */,
+				E959079C175E021C00DF4E4B /* StructFromIterator_Plugin-Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E9B398FE1757B05A00CBB75B /* StructFromIterator_Plugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E9B399131757B05A00CBB75B /* Build configuration list for PBXNativeTarget "StructFromIterator_Plugin" */;
+			buildPhases = (
+				E9B398FA1757B05A00CBB75B /* Sources */,
+				E9B398FB1757B05A00CBB75B /* Frameworks */,
+				E9B398FC1757B05A00CBB75B /* Resources */,
+				E9B398FD1757B05A00CBB75B /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StructFromIterator_Plugin;
+			productName = UnoffAPI_Plugin;
+			productReference = E9B398FF1757B05A00CBB75B /* StructFromIterator_Plugin.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E9B398F61757B05A00CBB75B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = Pavel;
+			};
+			buildConfigurationList = E9B398F91757B05A00CBB75B /* Build configuration list for PBXProject "StructFromIterator_Plugin" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E9B398F51757B05A00CBB75B;
+			productRefGroup = E9B399001757B05A00CBB75B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E9B398FE1757B05A00CBB75B /* StructFromIterator_Plugin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E9B398FC1757B05A00CBB75B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9590799175E020F00DF4E4B /* StructFromIterator.xml in Resources */,
+				E959079D175E021C00DF4E4B /* StructFromIterator_Plugin-Info.plist in Resources */,
+				E95907A0175E023F00DF4E4B /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E9B398FD1757B05A00CBB75B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This shell script simply copies the built plug-in to \"~/Library/Graphics/Quartz Composer Patches\" and overrides any previous version at that location\n\nmkdir -p \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Patches\"\nrm -rf \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Patches/StructFromIterator_Plugin.plugin\"\ncp -rf \"$BUILT_PRODUCTS_DIR/StructFromIterator_Plugin.plugin\" \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Patches/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E9B398FA1757B05A00CBB75B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E959079A175E020F00DF4E4B /* StructFromIterator.m in Sources */,
+				E959079B175E020F00DF4E4B /* StructFromIterator_PluginPrincipal.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E959079E175E023F00DF4E4B /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E959079F175E023F00DF4E4B /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E9B399111757B05A00CBB75B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E9B399121757B05A00CBB75B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E9B399141757B05A00CBB75B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+					/Library/Frameworks,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "StructFromIterator_Plugin/StructFromIterator_Plugin-Prefix.pch";
+				INFOPLIST_FILE = "StructFromIterator_Plugin/StructFromIterator_Plugin-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Patches";
+				PRODUCT_NAME = StructFromIterator_Plugin;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Debug;
+		};
+		E9B399151757B05A00CBB75B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+					/Library/Frameworks,
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "StructFromIterator_Plugin/StructFromIterator_Plugin-Prefix.pch";
+				INFOPLIST_FILE = "StructFromIterator_Plugin/StructFromIterator_Plugin-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Patches";
+				PRODUCT_NAME = StructFromIterator_Plugin;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E9B398F91757B05A00CBB75B /* Build configuration list for PBXProject "StructFromIterator_Plugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9B399111757B05A00CBB75B /* Debug */,
+				E9B399121757B05A00CBB75B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E9B399131757B05A00CBB75B /* Build configuration list for PBXNativeTarget "StructFromIterator_Plugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9B399141757B05A00CBB75B /* Debug */,
+				E9B399151757B05A00CBB75B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E9B398F61757B05A00CBB75B /* Project object */;
+}

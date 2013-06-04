@@ -9,6 +9,70 @@
 #import "StructFromIterator.h"
 
 @implementation StructFromIterator
+
+NSUInteger _iterationsCount;
+NSUInteger _currentIteration;
+
+QCStructure *outStructure;
+
+// Reallocate structure with enough fields for all iterations
+// Old contents will be lost
+-(void)allocateStructureForIterations:(NSUInteger)iterationsCount
+{
+    [self releaseStructure];
+    
+    if (iterationsCount < 1)
+        iterationsCount = 1;
+    
+    _iterationsCount = iterationsCount;
+    _currentIteration = 0;
+    
+    outStructure = [[QCStructure allocWithZone:NULL] init];
+    
+    GFList *osl = [outStructure _list];
+    
+    for (NSUInteger i = 0; i < iterationsCount; ++i)
+        [osl insertObject:[NSString string] atIndex:i forKey:nil];
+}
+
+-(void)releaseStructure
+{
+    _iterationsCount = 0;
+    _currentIteration = 0;
+    [outStructure release];
+    outStructure = nil;
+}
+
+// Saves the value of inputElement port for current iterations.
+// If this function is called _iterationCount times, then it will form a resulting array of iterations.
+- (void)performIteration
+{
+    if ([inputElement wasUpdated] || [inputIterations wasUpdated])
+    {
+        if ([inputIterations wasUpdated])
+        {
+            [self allocateStructureForIterations:(NSUInteger)[inputIterations doubleValue]];
+        }
+        
+        id value = [inputElement value];
+        if (!value)
+        {
+            value = [NSString string];
+        }
+        
+        GFList *osl = [outStructure _list];
+        [osl setObject:value atIndex:_currentIteration];
+        
+        _currentIteration = (_currentIteration + 1) % _iterationsCount;
+    }
+    
+    [outputStructure setStructureValue:outStructure];
+}
+
+
+// Boilerplate code to setup patch
+
+
 +(BOOL)isSafe
 {
 	return NO;
@@ -40,9 +104,6 @@
 
 -(BOOL)setup:(QCOpenGLContext*)context
 {
-    iterations = 0;
-    curIter = 0;
-    
     [self allocateStructureForIterations:1];
     
 	return YES;
@@ -53,32 +114,6 @@
     [self releaseStructure];
 }
 
--(void)allocateStructureForIterations:(NSUInteger)iter
-{
-    [self releaseStructure];
-    
-    if (iter < 1)
-        iter = 1;
-    
-    iterations = iter;
-    curIter = 0;
-    
-    outStructure = [[QCStructure allocWithZone:NULL] init];
-    
-    GFList *osl = [outStructure _list];
-    
-    for (NSUInteger i = 0; i < iter; ++i)
-        [osl insertObject:[NSString string] atIndex:i forKey:nil];
-}
-
--(void)releaseStructure
-{
-    iterations = 0;
-    curIter = 0;
-    [outStructure release];
-    outStructure = nil;
-}
-
 -(void)enable:(QCOpenGLContext*)context
 {
 }
@@ -87,28 +122,11 @@
 {
 }
 
+
+
 -(BOOL)execute:(QCOpenGLContext*)context time:(double)time arguments:(NSDictionary*)arguments
 {
-    if ([inputElement wasUpdated] || [inputIterations wasUpdated])
-    {
-        if ([inputIterations wasUpdated])
-        {
-            [self allocateStructureForIterations:(NSUInteger)[inputIterations doubleValue]];
-        }
-        
-        id value = [inputElement value];
-        if (!value)
-        {
-            value = [NSString string];
-        }
-        
-        GFList *osl = [outStructure _list];
-        [osl setObject:value atIndex:curIter];
-        
-        curIter = (curIter + 1) % iterations;
-    }
-    
-    [outputStructure setStructureValue:outStructure];
+    [self performIteration];
     
 	return YES;
 }

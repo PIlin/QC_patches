@@ -12,11 +12,6 @@
     QCNumberPort *inputIterations;
     
 	QCStructurePort *outputStructure;
-    
-    QCStructure *outStructure;
-    
-    NSUInteger iterations;
-    NSUInteger curIter;
 }
 
 +(BOOL)isSafe;

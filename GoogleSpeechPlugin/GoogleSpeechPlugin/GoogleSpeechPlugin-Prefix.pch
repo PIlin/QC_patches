@@ -1,0 +1,6 @@
+//
+// Prefix header for all source files of the 'GoogleSpeechPlugin' target in the 'GoogleSpeechPlugin' project
+//
+
+#ifdef __OBJC__
+#endif

@@ -1,0 +1,6 @@
+[submodule "GoogleSpeechPlugin/libsprec"]
+	path = GoogleSpeechPlugin/libsprec
+	url = git://github.com/PIlin/libsprec.git
+[submodule "GoogleSpeechPlugin/libjsonz"]
+	path = GoogleSpeechPlugin/libjsonz
+	url = git://github.com/PIlin/libjsonz.git

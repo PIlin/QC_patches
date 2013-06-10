@@ -1,0 +1,305 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E9B11570176632AC00DAE376 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B1156F176632AC00DAE376 /* Cocoa.framework */; };
+		E9B11572176632AC00DAE376 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11571176632AC00DAE376 /* Quartz.framework */; };
+		E9B1157C176632AC00DAE376 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E9B1157A176632AC00DAE376 /* InfoPlist.strings */; };
+		E9B1157F176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B1157E176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E9B1156C176632AC00DAE376 /* GoogleSpeechPlugin.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoogleSpeechPlugin.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9B1156F176632AC00DAE376 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		E9B11571176632AC00DAE376 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		E9B11574176632AC00DAE376 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		E9B11575176632AC00DAE376 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		E9B11576176632AC00DAE376 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		E9B11579176632AC00DAE376 /* GoogleSpeechPlugin-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleSpeechPlugin-Info.plist"; sourceTree = "<group>"; };
+		E9B1157B176632AC00DAE376 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E9B1157D176632AC00DAE376 /* GoogleSpeechPluginPlugIn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GoogleSpeechPluginPlugIn.h; sourceTree = "<group>"; };
+		E9B1157E176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoogleSpeechPluginPlugIn.m; sourceTree = "<group>"; };
+		E9B11580176632AC00DAE376 /* GoogleSpeechPlugin-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GoogleSpeechPlugin-Prefix.pch"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E9B11568176632AC00DAE376 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9B11570176632AC00DAE376 /* Cocoa.framework in Frameworks */,
+				E9B11572176632AC00DAE376 /* Quartz.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E9B11562176632AC00DAE376 = {
+			isa = PBXGroup;
+			children = (
+				E9B11577176632AC00DAE376 /* GoogleSpeechPlugin */,
+				E9B1156E176632AC00DAE376 /* Frameworks */,
+				E9B1156D176632AC00DAE376 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E9B1156D176632AC00DAE376 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E9B1156C176632AC00DAE376 /* GoogleSpeechPlugin.plugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E9B1156E176632AC00DAE376 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E9B1156F176632AC00DAE376 /* Cocoa.framework */,
+				E9B11571176632AC00DAE376 /* Quartz.framework */,
+				E9B11573176632AC00DAE376 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E9B11573176632AC00DAE376 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E9B11574176632AC00DAE376 /* AppKit.framework */,
+				E9B11575176632AC00DAE376 /* CoreData.framework */,
+				E9B11576176632AC00DAE376 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		E9B11577176632AC00DAE376 /* GoogleSpeechPlugin */ = {
+			isa = PBXGroup;
+			children = (
+				E9B1157D176632AC00DAE376 /* GoogleSpeechPluginPlugIn.h */,
+				E9B1157E176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m */,
+				E9B11578176632AC00DAE376 /* Supporting Files */,
+			);
+			path = GoogleSpeechPlugin;
+			sourceTree = "<group>";
+		};
+		E9B11578176632AC00DAE376 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E9B11579176632AC00DAE376 /* GoogleSpeechPlugin-Info.plist */,
+				E9B1157A176632AC00DAE376 /* InfoPlist.strings */,
+				E9B11580176632AC00DAE376 /* GoogleSpeechPlugin-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E9B1156B176632AC00DAE376 /* GoogleSpeechPlugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E9B11583176632AC00DAE376 /* Build configuration list for PBXNativeTarget "GoogleSpeechPlugin" */;
+			buildPhases = (
+				E9B11567176632AC00DAE376 /* Sources */,
+				E9B11568176632AC00DAE376 /* Frameworks */,
+				E9B11569176632AC00DAE376 /* Resources */,
+				E9B1156A176632AC00DAE376 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GoogleSpeechPlugin;
+			productName = GoogleSpeechPlugin;
+			productReference = E9B1156C176632AC00DAE376 /* GoogleSpeechPlugin.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E9B11563176632AC00DAE376 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = Pavel;
+			};
+			buildConfigurationList = E9B11566176632AC00DAE376 /* Build configuration list for PBXProject "GoogleSpeechPlugin" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = E9B11562176632AC00DAE376;
+			productRefGroup = E9B1156D176632AC00DAE376 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E9B1156B176632AC00DAE376 /* GoogleSpeechPlugin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E9B11569176632AC00DAE376 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9B1157C176632AC00DAE376 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E9B1156A176632AC00DAE376 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This shell script simply copies the built plug-in to \"~/Library/Graphics/Quartz Composer Plug-Ins\" and overrides any previous version at that location\n\nmkdir -p \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins\"\nrm -rf \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/GoogleSpeechPlugin.plugin\"\ncp -rf \"$BUILT_PRODUCTS_DIR/GoogleSpeechPlugin.plugin\" \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E9B11567176632AC00DAE376 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9B1157F176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		E9B1157A176632AC00DAE376 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E9B1157B176632AC00DAE376 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		E9B11581176632AC00DAE376 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E9B11582176632AC00DAE376 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E9B11584176632AC00DAE376 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GoogleSpeechPlugin/GoogleSpeechPlugin-Prefix.pch";
+				INFOPLIST_FILE = "GoogleSpeechPlugin/GoogleSpeechPlugin-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Debug;
+		};
+		E9B11585176632AC00DAE376 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "GoogleSpeechPlugin/GoogleSpeechPlugin-Prefix.pch";
+				INFOPLIST_FILE = "GoogleSpeechPlugin/GoogleSpeechPlugin-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E9B11566176632AC00DAE376 /* Build configuration list for PBXProject "GoogleSpeechPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9B11581176632AC00DAE376 /* Debug */,
+				E9B11582176632AC00DAE376 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E9B11583176632AC00DAE376 /* Build configuration list for PBXNativeTarget "GoogleSpeechPlugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9B11584176632AC00DAE376 /* Debug */,
+				E9B11585176632AC00DAE376 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E9B11563176632AC00DAE376 /* Project object */;
+}

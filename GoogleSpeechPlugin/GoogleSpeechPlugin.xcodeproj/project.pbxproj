@@ -11,7 +11,25 @@
 		E9B11572176632AC00DAE376 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11571176632AC00DAE376 /* Quartz.framework */; };
 		E9B1157C176632AC00DAE376 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E9B1157A176632AC00DAE376 /* InfoPlist.strings */; };
 		E9B1157F176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B1157E176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m */; };
+		E9B11587176636D800DAE376 /* libjsonz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11586176636D800DAE376 /* libjsonz.dylib */; };
+		E9B11589176636E000DAE376 /* libsprec.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11588176636E000DAE376 /* libsprec.dylib */; };
+		E9B1158B1766370200DAE376 /* libsprec.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E9B11588176636E000DAE376 /* libsprec.dylib */; };
+		E9B1158C1766370200DAE376 /* libjsonz.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E9B11586176636D800DAE376 /* libjsonz.dylib */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E9B1158A176636FA00DAE376 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				E9B1158B1766370200DAE376 /* libsprec.dylib in CopyFiles */,
+				E9B1158C1766370200DAE376 /* libjsonz.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E9B1156C176632AC00DAE376 /* GoogleSpeechPlugin.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GoogleSpeechPlugin.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -25,6 +43,8 @@
 		E9B1157D176632AC00DAE376 /* GoogleSpeechPluginPlugIn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GoogleSpeechPluginPlugIn.h; sourceTree = "<group>"; };
 		E9B1157E176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GoogleSpeechPluginPlugIn.m; sourceTree = "<group>"; };
 		E9B11580176632AC00DAE376 /* GoogleSpeechPlugin-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GoogleSpeechPlugin-Prefix.pch"; sourceTree = "<group>"; };
+		E9B11586176636D800DAE376 /* libjsonz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjsonz.dylib; path = libjsonz/libjsonz.dylib; sourceTree = "<group>"; };
+		E9B11588176636E000DAE376 /* libsprec.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsprec.dylib; path = libsprec/libsprec.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +52,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9B11589176636E000DAE376 /* libsprec.dylib in Frameworks */,
+				E9B11587176636D800DAE376 /* libjsonz.dylib in Frameworks */,
 				E9B11570176632AC00DAE376 /* Cocoa.framework in Frameworks */,
 				E9B11572176632AC00DAE376 /* Quartz.framework in Frameworks */,
 			);
@@ -43,6 +65,8 @@
 		E9B11562176632AC00DAE376 = {
 			isa = PBXGroup;
 			children = (
+				E9B11588176636E000DAE376 /* libsprec.dylib */,
+				E9B11586176636D800DAE376 /* libjsonz.dylib */,
 				E9B11577176632AC00DAE376 /* GoogleSpeechPlugin */,
 				E9B1156E176632AC00DAE376 /* Frameworks */,
 				E9B1156D176632AC00DAE376 /* Products */,
@@ -107,6 +131,7 @@
 				E9B11567176632AC00DAE376 /* Sources */,
 				E9B11568176632AC00DAE376 /* Frameworks */,
 				E9B11569176632AC00DAE376 /* Resources */,
+				E9B1158A176636FA00DAE376 /* CopyFiles */,
 				E9B1156A176632AC00DAE376 /* ShellScript */,
 			);
 			buildRules = (
@@ -167,7 +192,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This shell script simply copies the built plug-in to \"~/Library/Graphics/Quartz Composer Plug-Ins\" and overrides any previous version at that location\n\nmkdir -p \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins\"\nrm -rf \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/GoogleSpeechPlugin.plugin\"\ncp -rf \"$BUILT_PRODUCTS_DIR/GoogleSpeechPlugin.plugin\" \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/\"\n";
+			shellScript = "# This shell script simply copies the built plug-in to \"~/Library/Graphics/Quartz Composer Plug-Ins\" and overrides any previous version at that location\n\nmkdir -p \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins\"\nrm -rf \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/GoogleSpeechPlugin.plugin\"\ncp -rf \"$BUILT_PRODUCTS_DIR/GoogleSpeechPlugin.plugin\" \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/\"\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -260,6 +285,12 @@
 				GCC_PREFIX_HEADER = "GoogleSpeechPlugin/GoogleSpeechPlugin-Prefix.pch";
 				INFOPLIST_FILE = "GoogleSpeechPlugin/GoogleSpeechPlugin-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
+				LD_RUNPATH_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/libjsonz\"",
+					"\"$(SRCROOT)/libsprec\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = plugin;
 			};
@@ -274,6 +305,12 @@
 				GCC_PREFIX_HEADER = "GoogleSpeechPlugin/GoogleSpeechPlugin-Prefix.pch";
 				INFOPLIST_FILE = "GoogleSpeechPlugin/GoogleSpeechPlugin-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
+				LD_RUNPATH_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/libjsonz\"",
+					"\"$(SRCROOT)/libsprec\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = plugin;
 			};

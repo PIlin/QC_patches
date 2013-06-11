@@ -15,6 +15,10 @@
 		E9B11589176636E000DAE376 /* libsprec.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11588176636E000DAE376 /* libsprec.dylib */; };
 		E9B1158B1766370200DAE376 /* libsprec.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E9B11588176636E000DAE376 /* libsprec.dylib */; };
 		E9B1158C1766370200DAE376 /* libjsonz.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E9B11586176636D800DAE376 /* libjsonz.dylib */; };
+		E9B1158F1767745900DAE376 /* AudioRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9B1158E1767745900DAE376 /* AudioRecorder.mm */; };
+		E9B1159217677BD700DAE376 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9B1159017677BD700DAE376 /* CAXException.cpp */; };
+		E9B1159617677C7800DAE376 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9B1159417677C7800DAE376 /* CADebugMacros.cpp */; };
+		E9B115981767838D00DAE376 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B115971767838D00DAE376 /* AudioToolbox.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,6 +49,13 @@
 		E9B11580176632AC00DAE376 /* GoogleSpeechPlugin-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GoogleSpeechPlugin-Prefix.pch"; sourceTree = "<group>"; };
 		E9B11586176636D800DAE376 /* libjsonz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libjsonz.dylib; path = libjsonz/libjsonz.dylib; sourceTree = "<group>"; };
 		E9B11588176636E000DAE376 /* libsprec.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsprec.dylib; path = libsprec/libsprec.dylib; sourceTree = "<group>"; };
+		E9B1158D1767745900DAE376 /* AudioRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioRecorder.h; sourceTree = "<group>"; };
+		E9B1158E1767745900DAE376 /* AudioRecorder.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioRecorder.mm; sourceTree = "<group>"; };
+		E9B1159017677BD700DAE376 /* CAXException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CAXException.cpp; path = PublicUtility/CAXException.cpp; sourceTree = SOURCE_ROOT; };
+		E9B1159117677BD700DAE376 /* CAXException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CAXException.h; path = PublicUtility/CAXException.h; sourceTree = SOURCE_ROOT; };
+		E9B1159417677C7800DAE376 /* CADebugMacros.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CADebugMacros.cpp; path = PublicUtility/CADebugMacros.cpp; sourceTree = SOURCE_ROOT; };
+		E9B1159517677C7800DAE376 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CADebugMacros.h; path = PublicUtility/CADebugMacros.h; sourceTree = SOURCE_ROOT; };
+		E9B115971767838D00DAE376 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9B115981767838D00DAE376 /* AudioToolbox.framework in Frameworks */,
 				E9B11589176636E000DAE376 /* libsprec.dylib in Frameworks */,
 				E9B11587176636D800DAE376 /* libjsonz.dylib in Frameworks */,
 				E9B11570176632AC00DAE376 /* Cocoa.framework in Frameworks */,
@@ -65,6 +77,7 @@
 		E9B11562176632AC00DAE376 = {
 			isa = PBXGroup;
 			children = (
+				E9B115971767838D00DAE376 /* AudioToolbox.framework */,
 				E9B11588176636E000DAE376 /* libsprec.dylib */,
 				E9B11586176636D800DAE376 /* libjsonz.dylib */,
 				E9B11577176632AC00DAE376 /* GoogleSpeechPlugin */,
@@ -104,9 +117,12 @@
 		E9B11577176632AC00DAE376 /* GoogleSpeechPlugin */ = {
 			isa = PBXGroup;
 			children = (
+				E9B1159317677BDF00DAE376 /* PublicUtility */,
 				E9B1157D176632AC00DAE376 /* GoogleSpeechPluginPlugIn.h */,
 				E9B1157E176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m */,
 				E9B11578176632AC00DAE376 /* Supporting Files */,
+				E9B1158D1767745900DAE376 /* AudioRecorder.h */,
+				E9B1158E1767745900DAE376 /* AudioRecorder.mm */,
 			);
 			path = GoogleSpeechPlugin;
 			sourceTree = "<group>";
@@ -119,6 +135,17 @@
 				E9B11580176632AC00DAE376 /* GoogleSpeechPlugin-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E9B1159317677BDF00DAE376 /* PublicUtility */ = {
+			isa = PBXGroup;
+			children = (
+				E9B1159417677C7800DAE376 /* CADebugMacros.cpp */,
+				E9B1159517677C7800DAE376 /* CADebugMacros.h */,
+				E9B1159017677BD700DAE376 /* CAXException.cpp */,
+				E9B1159117677BD700DAE376 /* CAXException.h */,
+			);
+			name = PublicUtility;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -202,6 +229,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9B1157F176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m in Sources */,
+				E9B1158F1767745900DAE376 /* AudioRecorder.mm in Sources */,
+				E9B1159217677BD700DAE376 /* CAXException.cpp in Sources */,
+				E9B1159617677C7800DAE376 /* CADebugMacros.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

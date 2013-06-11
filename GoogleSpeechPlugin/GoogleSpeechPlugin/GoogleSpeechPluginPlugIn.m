@@ -13,6 +13,8 @@
 
 #import <sprec/sprec.h>
 
+#import "AudioRecorder.h"
+
 
 static struct sprec_result *recognize_file(const char *filename, char const* lang, uint32_t samplerate)
 {
@@ -287,9 +289,11 @@ NSTimeInterval _recordStartedAtTimeInterval;
 //    [self recognise_file:@"/Users/pavel/voice_records/rp-1.flac"
 //              resultText:&resText resultConfidence:&resConf];
     
-    [self recogniseFromMicDuration:recordTime
-                        resultText:&resText
-                  resultConfidence:&resConf];
+//    [self recogniseFromMicDuration:recordTime
+//                        resultText:&resText
+//                  resultConfidence:&resConf];
+
+    [self recognizeFromMicresultText:&resText resultConfidence:&resConf];
     
 //    resConf = 100;
 //    resText = @"asdfasfdsadfsdf";
@@ -321,6 +325,15 @@ NSTimeInterval _recordStartedAtTimeInterval;
     NSLog(@"result: %@ (%lf)", *resultString, *resultConfidence);
     
     sprec_result_free(res);
+    
+    
+}
+
+-(void) recognizeFromMicresultText:(NSString**)resultString  resultConfidence:(double*)resultConfidence
+{
+    AudioRecorder* rec = [[AudioRecorder alloc] init];
+    
+    [rec record:0];
 }
 
 - (void)applyRecognition:(NSString*)text withConfidence:(double)confidence startedAtTime:(NSTimeInterval)time

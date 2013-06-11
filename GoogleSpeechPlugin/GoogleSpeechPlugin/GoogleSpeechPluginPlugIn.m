@@ -287,10 +287,14 @@ NSTimeInterval _recordStartedAtTimeInterval;
 //    [self recognise_file:@"/Users/pavel/voice_records/rp-1.flac"
 //              resultText:&resText resultConfidence:&resConf];
     
-    resConf = 100;
-    resText = @"asdfasfdsadfsdf";
+    [self recogniseFromMicDuration:recordTime
+                        resultText:&resText
+                  resultConfidence:&resConf];
     
-    sleep(4);
+//    resConf = 100;
+//    resText = @"asdfasfdsadfsdf";
+//    
+//    sleep(4);
     
     [self applyRecognition:resText withConfidence:resConf startedAtTime:time];
 }
@@ -299,12 +303,24 @@ NSTimeInterval _recordStartedAtTimeInterval;
 {
     struct sprec_result* res = recognize_file([fileName UTF8String], "en-EN", 48000);
     
-    NSLog(@"%s (%lf)", res->text, res->confidence);
+    NSLog(@"result: %s (%lf)", res->text, res->confidence);
     
     *resultConfidence = res->confidence;
     *resultString = [NSString stringWithUTF8String:res->text];
     
     free(res);
+}
+
+-(void) recogniseFromMicDuration:(double)duration resultText:(NSString**)resultString  resultConfidence:(double*)resultConfidence
+{
+    struct sprec_result* res = sprec_recognize_sync("ru-RU", duration);
+    
+    *resultConfidence = res->confidence;
+    *resultString = [NSString stringWithUTF8String:res->text];
+    
+    NSLog(@"result: %@ (%lf)", *resultString, *resultConfidence);
+    
+    sprec_result_free(res);
 }
 
 - (void)applyRecognition:(NSString*)text withConfidence:(double)confidence startedAtTime:(NSTimeInterval)time

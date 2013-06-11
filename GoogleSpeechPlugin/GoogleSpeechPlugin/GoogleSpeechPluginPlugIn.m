@@ -280,8 +280,13 @@ NSTimeInterval _recordStartedAtTimeInterval;
     NSString* resText = nil;
     double resConf = 0;
     
-    [self recognise_file:@"/Users/pavel/voice_records/rp-1.flac"
-              resultText:&resText resultConfidence:&resConf];
+//    [self recognise_file:@"/Users/pavel/voice_records/rp-1.flac"
+//              resultText:&resText resultConfidence:&resConf];
+    
+    resConf = 100;
+    resText = @"asdfasfdsadfsdf";
+    
+    sleep(4);
     
     [self applyRecognition:resText withConfidence:resConf startedAtTime:time];
 }

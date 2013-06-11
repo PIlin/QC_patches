@@ -227,10 +227,14 @@ NSTimeInterval _recordStartedAtTimeInterval;
             
             _recordStartedAtTimeInterval = startTime;
             
-            dispatch_queue_t queue = dispatch_get_main_queue();
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            
+            NSLog(@"adding task time=%lf", startTime);
             
             dispatch_async(queue, ^{
+                NSLog(@"task started for time = %lf",  startTime);
                 [self startRecognitionWithTime:recordTime startedAtTime:startTime];
+                NSLog(@"task finished for time = %lf",  startTime);
             });
         }
         

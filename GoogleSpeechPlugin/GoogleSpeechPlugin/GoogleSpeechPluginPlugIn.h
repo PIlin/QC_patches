@@ -14,4 +14,11 @@
 //@property double inputFoo;
 //@property (copy) NSString* outputBar;
 
+@property BOOL inputStartRecord;
+@property double inputRecordTime;
+
+@property (copy) NSString* outputRecognisedString;
+@property double outputRecognitionConfidence;
+@property BOOL outputInProcess;
+
 @end

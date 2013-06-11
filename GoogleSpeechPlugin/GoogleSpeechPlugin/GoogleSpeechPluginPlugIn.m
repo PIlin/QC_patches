@@ -11,13 +11,92 @@
 
 #import "GoogleSpeechPluginPlugIn.h"
 
-#define	kQCPlugIn_Name				@"GoogleSpeechPlugin"
-#define	kQCPlugIn_Description		@"GoogleSpeechPlugin description"
+#import <sprec/sprec.h>
+
+
+static struct sprec_result *recognize_file(const char *filename, char const* lang, uint32_t samplerate)
+{
+    int err;
+    char* buf;
+    int len;
+    struct sprec_server_response *resp;
+    struct sprec_result *res;
+    char *text;
+    double confidence;
+    
+    const char* flacfile = filename;
+    
+    err = sprec_get_file_contents(flacfile, &buf, &len);
+	if (err != 0)
+	{
+		return NULL;
+	}
+    
+	/**
+	 * ...and send it to Google
+	 */
+	resp = sprec_send_audio_data(buf, len, lang, samplerate);
+	free(buf);
+	if (resp == NULL)
+	{
+		return NULL;
+	}
+    
+    
+	/**
+	 * Get the JSON from the response object,
+	 * then parse it to get the actual text and confidence
+	 */
+	text = sprec_get_text_from_json(resp->data);
+	confidence = sprec_get_confidence_from_json(resp->data);
+	sprec_free_response(resp);
+    
+	/**
+	 * Compose the return value
+	 */
+	res = malloc(sizeof(*res));
+	if (res == NULL)
+	{
+		free(text);
+		return NULL;
+	}
+	
+	res->text = text;
+	res->confidence = confidence;
+	return res;
+}
+
+
+
+#define	kQCPlugIn_Name				@"Google Speech Plugin"
+#define	kQCPlugIn_Description		@"Google Speech Plugin allows to use Google Speech-to-Text API."
+
+@interface GoogleSpeechPluginPlugIn ()
+
+@property (strong) NSString* recognisedString;
+@property double recognisedConfidence;
+@property BOOL recognitionFinished;
+
+@end
+
 
 @implementation GoogleSpeechPluginPlugIn
 
 // Here you need to declare the input / output properties as dynamic as Quartz Composer will handle their implementation
 //@dynamic inputFoo, outputBar;
+
+@dynamic inputStartRecord;
+@dynamic inputRecordTime;
+
+@dynamic outputRecognisedString;
+@dynamic outputRecognitionConfidence;
+@dynamic outputInProcess;
+
+
+
+
+BOOL _prevStartRecordValue;
+NSTimeInterval _recordStartedAtTimeInterval;
 
 + (NSDictionary *)attributes
 {
@@ -27,27 +106,72 @@
 
 + (NSDictionary *)attributesForPropertyPortWithKey:(NSString *)key
 {
-	// Specify the optional attributes for property based ports (QCPortAttributeNameKey, QCPortAttributeDefaultValueKey...).
+    if ([key isEqualToString:@"inputStartRecord"])
+        return @{QCPortAttributeNameKey: @"Start Record",
+                 QCPortAttributeDefaultValueKey: @NO};
+    if ([key isEqualToString:@"inputRecordTime"])
+        return @{QCPortAttributeNameKey: @"Record Time",
+                 QCPortAttributeDefaultValueKey: @10.0};
+    
+    if ([key isEqualToString:@"outputRecognisedString"])
+        return @{QCPortAttributeNameKey: @"Recognised String",
+                 QCPortAttributeDefaultValueKey: @""};
+    if ([key isEqualToString:@"outputRecognitionConfidence"])
+        return @{QCPortAttributeNameKey: @"Confidence",
+                 QCPortAttributeDefaultValueKey: @0.0};
+    if ([key isEqualToString:@"outputInProcess"])
+        return @{QCPortAttributeNameKey: @"In process",
+                 QCPortAttributeDefaultValueKey: @NO};
+
+//    if ([key isEqualToString:@"inputStartRecord"])
+//        return [NSDictionary dictionaryWithObjectsAndKeys:
+//                @"Start Record", QCPortAttributeNameKey,
+//                NO, QCPortAttributeDefaultValueKey, nil];
+//    if ([key isEqualToString:@"inputRecordTime"])
+//        return [NSDictionary dictionaryWithObjectsAndKeys:
+//                @"Record Time", QCPortAttributeNameKey,
+//                @10.0, QCPortAttributeDefaultValueKey, nil];
+//
+//    if ([key isEqualToString:@"outputRecognisedString"])
+//        return [NSDictionary dictionaryWithObjectsAndKeys:
+//                @"Recognised String", QCPortAttributeNameKey,
+//                @"", QCPortAttributeDefaultValueKey, nil];
+//    if ([key isEqualToString:@"outputRecognitionConfidence"])
+//        return [NSDictionary dictionaryWithObjectsAndKeys:
+//                @"Confidence", QCPortAttributeNameKey,
+//                @0.0, QCPortAttributeDefaultValueKey, nil];
+//    if ([key isEqualToString:@"outputInProcess"])
+//        return [NSDictionary dictionaryWithObjectsAndKeys:
+//                @"In process", QCPortAttributeNameKey,
+//                NO, QCPortAttributeDefaultValueKey, nil];
+
+    
+    
 	return nil;
 }
 
 + (QCPlugInExecutionMode)executionMode
 {
 	// Return the execution mode of the plug-in: kQCPlugInExecutionModeProvider, kQCPlugInExecutionModeProcessor, or kQCPlugInExecutionModeConsumer.
-	return kQCPlugInExecutionModeProcessor;
+	return kQCPlugInExecutionModeProvider;
 }
+
 
 + (QCPlugInTimeMode)timeMode
 {
 	// Return the time dependency mode of the plug-in: kQCPlugInTimeModeNone, kQCPlugInTimeModeIdle or kQCPlugInTimeModeTimeBase.
-	return kQCPlugInTimeModeNone;
+	return kQCPlugInTimeModeIdle;
 }
 
 - (id)init
 {
 	self = [super init];
 	if (self) {
-		// Allocate any permanent resource required by the plug-in.
+
+        _recognisedString = @"";
+        _recognisedConfidence = 0;
+        _recognitionFinished = NO;
+        
 	}
 	
 	return self;
@@ -69,6 +193,8 @@
 - (void)enableExecution:(id <QCPlugInContext>)context
 {
 	// Called by Quartz Composer when the plug-in instance starts being used by Quartz Composer.
+    
+    NSLog(@"enableExecution");
 }
 
 - (BOOL)execute:(id <QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary *)arguments
@@ -81,18 +207,117 @@
 	The OpenGL context for rendering can be accessed and defined for CGL macros using:
 	CGLContextObj cgl_ctx = [context CGLContextObj];
 	*/
-	
+    
+    BOOL curStartRecordValue = self.inputStartRecord;
+    
+    if (curStartRecordValue && _prevStartRecordValue != curStartRecordValue)
+    {
+        double recordTime = self.inputRecordTime;
+        
+        NSTimeInterval startTime = time;
+        
+        
+        @synchronized(self) {
+            
+            self.recognitionFinished = NO;
+            self.recognisedString = @"";
+            self.recognisedConfidence = 0;
+            
+            self.outputInProcess = YES;
+            
+            _recordStartedAtTimeInterval = startTime;
+            
+            dispatch_queue_t queue = dispatch_get_main_queue();
+            
+            dispatch_async(queue, ^{
+                [self startRecognitionWithTime:recordTime startedAtTime:startTime];
+            });
+        }
+        
+        
+        
+    }
+    
+    
+    @synchronized(self) {
+        
+        if (self.recognitionFinished)
+        {
+            self.outputInProcess = NO;
+            
+            self.outputRecognisedString = [self.recognisedString copy];
+            self.outputRecognitionConfidence = self.recognisedConfidence;
+            
+            self.recognitionFinished = NO;
+        }
+    }
+    
+    _prevStartRecordValue = curStartRecordValue;
+    
 	return YES;
 }
 
 - (void)disableExecution:(id <QCPlugInContext>)context
 {
 	// Called by Quartz Composer when the plug-in instance stops being used by Quartz Composer.
+    
+    NSLog(@"disableExecution");
 }
 
 - (void)stopExecution:(id <QCPlugInContext>)context
 {
 	// Called by Quartz Composer when rendering of the composition stops: perform any required cleanup for the plug-in.
+    
+    NSLog(@"stopExecution");
+}
+
+
+#pragma mark Recognition implementation
+
+- (void)startRecognitionWithTime:(double)recordTime startedAtTime:(NSTimeInterval)time
+{
+    
+    NSString* resText = nil;
+    double resConf = 0;
+    
+    [self recognise_file:@"/Users/pavel/voice_records/rp-1.flac"
+              resultText:&resText resultConfidence:&resConf];
+    
+    [self applyRecognition:resText withConfidence:resConf startedAtTime:time];
+}
+
+-(void)recognise_file:(NSString*)fileName resultText:(NSString**)resultString resultConfidence:(double*)resultConfidence
+{
+    struct sprec_result* res = recognize_file([fileName UTF8String], "en-EN", 48000);
+    
+    NSLog(@"%s (%lf)", res->text, res->confidence);
+    
+    *resultConfidence = res->confidence;
+    *resultString = [NSString stringWithUTF8String:res->text];
+    
+    free(res);
+}
+
+- (void)applyRecognition:(NSString*)text withConfidence:(double)confidence startedAtTime:(NSTimeInterval)time
+{
+    @synchronized(self) {
+        
+        if (time != _recordStartedAtTimeInterval)
+        {
+            NSLog(@"task is outdated. Started at %lf, current started at %lf",
+                  time, _recordStartedAtTimeInterval);
+            return;
+        }
+    
+        if (!self.recognitionFinished)
+        {
+            _recognisedString = [text copy];
+            _recognisedConfidence = confidence;
+            
+            self.recognitionFinished = YES;
+        }
+        
+    }
 }
 
 @end

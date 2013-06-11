@@ -283,6 +283,7 @@
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GoogleSpeechPlugin/GoogleSpeechPlugin-Prefix.pch";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/libsprec/include\"";
 				INFOPLIST_FILE = "GoogleSpeechPlugin/GoogleSpeechPlugin-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
 				LD_RUNPATH_SEARCH_PATHS = "";
@@ -303,6 +304,7 @@
 				GCC_ENABLE_OBJC_GC = supported;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GoogleSpeechPlugin/GoogleSpeechPlugin-Prefix.pch";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/libsprec/include\"";
 				INFOPLIST_FILE = "GoogleSpeechPlugin/GoogleSpeechPlugin-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
 				LD_RUNPATH_SEARCH_PATHS = "";

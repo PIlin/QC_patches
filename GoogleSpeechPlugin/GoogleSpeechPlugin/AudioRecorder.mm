@@ -193,6 +193,11 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
         UInt32 size = sizeof(recordFormat);
         XThrowIfError(AudioQueueGetProperty(recorderUserData.queue, kAudioConverterCurrentOutputStreamDescription, &recordFormat, &size), "couldn't get actual queue's format");
         
+        if (!(recordFormat.mFormatFlags & (kLinearPCMFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked)))
+        {
+            XThrow(1, "returned recordFormat is not supported");
+        }
+        
         int bufferByteSize = computeRecordBufferSize(&recordFormat, recorderUserData.queue, 0.5f);
         for (int i = 0; i < NUMBER_RECORD_BUFFERS;  ++i)
         {

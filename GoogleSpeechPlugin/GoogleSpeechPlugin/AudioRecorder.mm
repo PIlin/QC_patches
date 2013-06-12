@@ -16,7 +16,6 @@
 
 
 typedef struct RecorderUserData {
-	AudioQueueRef				queue;
     Boolean                     need_stop;
     Boolean                     running;
 } RecorderUserData;
@@ -55,6 +54,7 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
 
 @implementation AudioRecorder
 
+// Protect access with stateCondition.
 RecorderUserData recorderUserData;
 
 static AudioStreamBasicDescription initRecordFormatFromPararm(const uint32_t sample_rate, const uint16_t channels, const uint16_t bit_depth)
@@ -122,8 +122,11 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
     BOOL wasError = NO;
     [_stateCondition lock];
     {
-        if (recorderUserData.queue)
+        if (recorderUserData.running)
+        {
+            NSLog(@"already recording");
             wasError = YES;
+        }
         else
         {
             memset(&recorderUserData, 0, sizeof(recorderUserData));
@@ -134,7 +137,6 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
     
     if (wasError)
     {
-        NSLog(@"already recording");
         return wasError;
     }
     
@@ -192,45 +194,33 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
     
     AudioStreamBasicDescription recordFormat = initRecordFormatFromPararm(sample_rate, channels, bit_depth);
     
+    AudioQueueRef queue;
+    
     try
     {
-        XThrowIfError(AudioQueueNewInput(&recordFormat, inputBufferHandler, &recorderUserData, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode, 0, &recorderUserData.queue), "AudioQueueNewInput failed");
+        XThrowIfError(AudioQueueNewInput(&recordFormat, inputBufferHandler, &recorderUserData, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode, 0, &queue), "AudioQueueNewInput failed");
         
         NSLog(@"queue created");
         
         UInt32 size = sizeof(recordFormat);
-        XThrowIfError(AudioQueueGetProperty(recorderUserData.queue, kAudioConverterCurrentOutputStreamDescription, &recordFormat, &size), "couldn't get actual queue's format");
+        XThrowIfError(AudioQueueGetProperty(queue, kAudioConverterCurrentOutputStreamDescription, &recordFormat, &size), "couldn't get actual queue's format");
         
         if (!(recordFormat.mFormatFlags & (kLinearPCMFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked)))
         {
             XThrow(1, "returned recordFormat is not supported");
         }
         
-        int bufferByteSize = computeRecordBufferSize(&recordFormat, recorderUserData.queue, 0.5f);
+        int bufferByteSize = computeRecordBufferSize(&recordFormat, queue, 0.5f);
         for (int i = 0; i < NUMBER_RECORD_BUFFERS;  ++i)
         {
             AudioQueueBufferRef buffer;
-            XThrowIfError(AudioQueueAllocateBuffer(recorderUserData.queue, bufferByteSize, &buffer), "AudioQueueAllocateBuffer failed");
-            XThrowIfError(AudioQueueEnqueueBuffer(recorderUserData.queue, buffer, 0, NULL), "AudioQueueEnqueueBuffer failed");
+            XThrowIfError(AudioQueueAllocateBuffer(queue, bufferByteSize, &buffer), "AudioQueueAllocateBuffer failed");
+            XThrowIfError(AudioQueueEnqueueBuffer(queue, buffer, 0, NULL), "AudioQueueEnqueueBuffer failed");
         }
         
         
-        XThrowIfError(AudioQueueStart(recorderUserData.queue, NULL), "AudioQueueStart failed");
+        XThrowIfError(AudioQueueStart(queue, NULL), "AudioQueueStart failed");
        
-        
-        //
-        //sleep(4);
-        
-//        RecorderUserData* pud = &recorderUserData;
-//        double delayInSeconds = 4.0;
-//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-//        dispatch_after(popTime, dispatch_get_current_queue(), ^(void){
-//            
-//            NSLog(@"4 seconds passed, stop recording");
-//            pud->running = NO;
-//            
-//        });
-        
         
         while (TRUE)
         {
@@ -245,7 +235,7 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
             CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, FALSE);
         }
 
-        XThrowIfError(AudioQueueStop(recorderUserData.queue, TRUE), "AudioQueueStop failed");
+        XThrowIfError(AudioQueueStop(queue, TRUE), "AudioQueueStop failed");
  
     }
     catch(const CAXException& e)
@@ -256,8 +246,8 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
         wasError = YES;
     }
     
-    AudioQueueDispose(recorderUserData.queue, YES);
-    recorderUserData.queue = nil;
+    AudioQueueDispose(queue, YES);
+    queue = nil;
     
     return wasError;
 }

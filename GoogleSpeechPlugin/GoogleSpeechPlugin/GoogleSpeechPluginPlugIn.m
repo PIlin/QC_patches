@@ -79,6 +79,8 @@ static struct sprec_result *recognize_file(const char *filename, char const* lan
 @property double recognisedConfidence;
 @property BOOL recognitionFinished;
 
+@property (strong) AudioRecorder* recorder;
+
 @end
 
 
@@ -174,6 +176,8 @@ NSTimeInterval _recordStartedAtTimeInterval;
         _recognisedConfidence = 0;
         _recognitionFinished = NO;
         
+        
+        _recorder = [[AudioRecorder alloc] init];
 	}
 	
 	return self;
@@ -212,36 +216,40 @@ NSTimeInterval _recordStartedAtTimeInterval;
     
     BOOL curStartRecordValue = self.inputStartRecord;
     
-    if (curStartRecordValue && _prevStartRecordValue != curStartRecordValue)
+    if (_prevStartRecordValue != curStartRecordValue)
     {
-        double recordTime = self.inputRecordTime;
-        
-        NSTimeInterval startTime = time;
-        
-        
-        @synchronized(self) {
+        if (curStartRecordValue)
+        {
+            // rising edge
+            // start recording
+            double recordTime = self.inputRecordTime;
             
-            self.recognitionFinished = NO;
-            self.recognisedString = @"";
-            self.recognisedConfidence = 0;
+            NSTimeInterval startTime = time;
             
-            self.outputInProcess = YES;
             
-            _recordStartedAtTimeInterval = startTime;
-            
-            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-            
-            NSLog(@"adding task time=%lf", startTime);
-            
-            dispatch_async(queue, ^{
-                NSLog(@"task started for time = %lf",  startTime);
-                [self startRecognitionWithTime:recordTime startedAtTime:startTime];
-                NSLog(@"task finished for time = %lf",  startTime);
-            });
+            @synchronized(self) {
+                
+                self.recognitionFinished = NO;
+                self.recognisedString = @"";
+                self.recognisedConfidence = 0;
+                
+                self.outputInProcess = YES;
+                
+                _recordStartedAtTimeInterval = startTime;
+
+                [self startRecognition];
+
+            }
+                
         }
-        
-        
-        
+        else
+        {
+            // falling edge
+            // stop recording
+            
+            [self stopRecognition];
+        }
+
     }
     
     
@@ -280,28 +288,39 @@ NSTimeInterval _recordStartedAtTimeInterval;
 
 #pragma mark Recognition implementation
 
-- (void)startRecognitionWithTime:(double)recordTime startedAtTime:(NSTimeInterval)time
-{
-    
-    NSString* resText = nil;
-    double resConf = 0;
-    
-//    [self recognise_file:@"/Users/pavel/voice_records/rp-1.flac"
-//              resultText:&resText resultConfidence:&resConf];
-    
-//    [self recogniseFromMicDuration:recordTime
-//                        resultText:&resText
-//                  resultConfidence:&resConf];
-
-    [self recognizeFromMicresultText:&resText resultConfidence:&resConf];
-    
-//    resConf = 100;
-//    resText = @"asdfasfdsadfsdf";
+//- (void)startRecognitionWithTime:(double)recordTime startedAtTime:(NSTimeInterval)time
+//{
 //    
-//    sleep(4);
-    
-    [self applyRecognition:resText withConfidence:resConf startedAtTime:time];
+//    NSString* resText = nil;
+//    double resConf = 0;
+//    
+////    [self recognise_file:@"/Users/pavel/voice_records/rp-1.flac"
+////              resultText:&resText resultConfidence:&resConf];
+//    
+////    [self recogniseFromMicDuration:recordTime
+////                        resultText:&resText
+////                  resultConfidence:&resConf];
+//
+//    [self recognizeFromMicresultText:&resText resultConfidence:&resConf];
+//    
+////    resConf = 100;
+////    resText = @"asdfasfdsadfsdf";
+////    
+////    sleep(4);
+//    
+//    [self applyRecognition:resText withConfidence:resConf startedAtTime:time];
+//}
+
+- (void)startRecognition
+{
+    [_recorder startRecording];
 }
+
+- (void)stopRecognition
+{
+    [_recorder stopRecording];
+}
+
 
 -(void)recognise_file:(NSString*)fileName resultText:(NSString**)resultString resultConfidence:(double*)resultConfidence
 {
@@ -327,13 +346,6 @@ NSTimeInterval _recordStartedAtTimeInterval;
     sprec_result_free(res);
     
     
-}
-
--(void) recognizeFromMicresultText:(NSString**)resultString  resultConfidence:(double*)resultConfidence
-{
-    AudioRecorder* rec = [[AudioRecorder alloc] init];
-    
-    [rec record:0];
 }
 
 - (void)applyRecognition:(NSString*)text withConfidence:(double)confidence startedAtTime:(NSTimeInterval)time

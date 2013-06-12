@@ -11,6 +11,8 @@
 @interface AudioRecorder : NSObject
 
 
-- (BOOL)record:(UInt32)device;
+- (BOOL)startRecording;
+
+- (void)stopRecording;
 
 @end

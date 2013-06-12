@@ -17,12 +17,7 @@
 
 typedef struct RecorderUserData {
 	AudioQueueRef				queue;
-	
-	CFAbsoluteTime				queueStartStopTime;
-	AudioFileID					recordFile;
-	SInt64						recordPacket; // current packet number in record file
-	Boolean						running;
-	Boolean						verbose;
+    Boolean                     need_stop;
 } RecorderUserData;
 
 
@@ -39,7 +34,8 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
         NSLog(@"inputBufferHandler buffer = %p", inBuffer);
         
         // if we're not stopping, re-enqueue the buffe so that it gets filled again
-        if (userData.running)
+        // TODO: unprotected access to cond var. It's only bool so it's should be ok. And we flush all the buffers after the need_stop is set to the YES.
+        if (!userData.need_stop)
             XThrowIfError(AudioQueueEnqueueBuffer(inAQ, inBuffer, 0, NULL), "AudioQueueEnqueueBuffer failed");
     }
     catch(const CAXException& e)
@@ -50,11 +46,17 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
 }
 
 
+@interface AudioRecorder ()
+
+@property (strong) NSCondition* stateCondition;
+
+@end
 
 @implementation AudioRecorder
 
+RecorderUserData recorderUserData;
 
-AudioStreamBasicDescription initRecordFormatFromPararm(const uint32_t sample_rate, const uint16_t channels, const uint16_t bit_depth)
+static AudioStreamBasicDescription initRecordFormatFromPararm(const uint32_t sample_rate, const uint16_t channels, const uint16_t bit_depth)
 {
     AudioStreamBasicDescription recordFormat;
     memset(&recordFormat, 0, sizeof(recordFormat));
@@ -102,24 +104,85 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
 	return bytes;
 }
 
-- (BOOL)record:(UInt32)device
+
+
+- (id)init
 {
+    self = [super init];
+    if (self) {
+        memset(&recorderUserData, 0, sizeof(recorderUserData));
+    }
+    return self;
+}
+
+
+- (BOOL)startRecording
+{
+    BOOL wasError = NO;
+    [_stateCondition lock];
+    {
+        if (recorderUserData.queue)
+            wasError = YES;
+        else
+            memset(&recorderUserData, 0, sizeof(recorderUserData));
+    }
+    [_stateCondition unlock];
+    
+    if (wasError)
+    {
+        NSLog(@"already recording");
+        return wasError;
+    }
+    
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
+    dispatch_async(queue, ^{
+        NSLog(@"started recording");
+        [self record];
+        
+        [_stateCondition lock];
+        
+        recorderUserData.need_stop = NO;
+        [_stateCondition broadcast];
+        
+        [_stateCondition unlock];
+        
+        NSLog(@"recording finished");
+    });
+    
+    return wasError;
+}
+
+- (void)stopRecording
+{
+    NSLog(@"asking for recording to stop");
+    
+    [_stateCondition lock];
+    recorderUserData.need_stop = YES;
+    
+    while (recorderUserData.need_stop)
+        [_stateCondition wait];
+    
+    [_stateCondition unlock];
+    
+    NSLog(@"recording stopped");
+}
+
+
+
+- (BOOL)record
+{
+    NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
+    [runLoop runMode:NSDefaultRunLoopMode
+							 beforeDate:[NSDate distantFuture]];
+    
+    
     const uint32_t sample_rate = 16000;
     const uint16_t bit_depth = 16;
     const uint16_t channels = 2;
     
-    
-    NSRunLoop* runLoop = [NSRunLoop currentRunLoop];
-    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-							 beforeDate:[NSDate distantFuture]];
-    
-    
-//    AudioDeviceID deviceID = device;
+    BOOL wasError = NO;
     
     AudioStreamBasicDescription recordFormat = initRecordFormatFromPararm(sample_rate, channels, bit_depth);
-    
-    RecorderUserData recorderUserData;
-    memset(&recorderUserData, 0, sizeof(recorderUserData));
     
     try
     {
@@ -139,51 +202,51 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
         }
         
         
-        recorderUserData.running = YES;
         XThrowIfError(AudioQueueStart(recorderUserData.queue, NULL), "AudioQueueStart failed");
+       
         
         //
         //sleep(4);
         
-        RecorderUserData* pud = &recorderUserData;
-        double delayInSeconds = 4.0;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_current_queue(), ^(void){
-            
-            NSLog(@"4 seconds passed, stop recording");
-            pud->running = NO;
-            
-        });
+//        RecorderUserData* pud = &recorderUserData;
+//        double delayInSeconds = 4.0;
+//        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+//        dispatch_after(popTime, dispatch_get_current_queue(), ^(void){
+//            
+//            NSLog(@"4 seconds passed, stop recording");
+//            pud->running = NO;
+//            
+//        });
         
         
-        while( recorderUserData.running )
+        while (TRUE)
         {
-            //NSLog(@"before CFRunLoopRunInMode");
+            BOOL stop = NO;
+            [_stateCondition lock];
+            stop = recorderUserData.need_stop;
+            [_stateCondition unlock];
+            
+            if (stop)
+                break;
+            
             CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, FALSE);
-            //NSLog(@"after CFRunLoopRunInMode");
         }
-        
-        
+
         XThrowIfError(AudioQueueStop(recorderUserData.queue, TRUE), "AudioQueueStop failed");
-        
-    cleanup:
-        
-        AudioQueueDispose(recorderUserData.queue, YES);
+ 
     }
     catch(const CAXException& e)
     {
-        // ????
-        AudioQueueDispose(recorderUserData.queue, YES);
-        
         char buf[256];
         NSLog(@"cathch exception %s (%s)", e.mOperation, e.FormatError(buf));
         
-        return YES;
+        wasError = YES;
     }
     
-   
+    AudioQueueDispose(recorderUserData.queue, YES);
+    recorderUserData.queue = nil;
     
-    return NO;
+    return wasError;
 }
 
 

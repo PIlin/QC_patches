@@ -18,6 +18,7 @@
 typedef struct RecorderUserData {
 	AudioQueueRef				queue;
     Boolean                     need_stop;
+    Boolean                     running;
 } RecorderUserData;
 
 
@@ -124,7 +125,10 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
         if (recorderUserData.queue)
             wasError = YES;
         else
+        {
             memset(&recorderUserData, 0, sizeof(recorderUserData));
+            recorderUserData.running = YES;
+        }
     }
     [_stateCondition unlock];
     
@@ -137,10 +141,12 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
     dispatch_async(queue, ^{
         NSLog(@"started recording");
+        
         [self record];
         
         [_stateCondition lock];
         
+        recorderUserData.running = NO;
         recorderUserData.need_stop = NO;
         [_stateCondition broadcast];
         
@@ -157,11 +163,13 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
     NSLog(@"asking for recording to stop");
     
     [_stateCondition lock];
-    recorderUserData.need_stop = YES;
-    
-    while (recorderUserData.need_stop)
-        [_stateCondition wait];
-    
+    if (recorderUserData.running)
+    {
+        recorderUserData.need_stop = YES;
+        
+        while (recorderUserData.need_stop)
+            [_stateCondition wait];
+    }
     [_stateCondition unlock];
     
     NSLog(@"recording stopped");

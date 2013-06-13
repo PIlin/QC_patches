@@ -38,7 +38,7 @@
 //@dynamic inputFoo, outputBar;
 
 @dynamic inputStartRecord;
-@dynamic inputRecordTime;
+@dynamic inputLanguage;
 
 @dynamic outputRecognisedString;
 @dynamic outputRecognitionConfidence;
@@ -61,9 +61,9 @@ NSTimeInterval _recordStartedAtTimeInterval;
     if ([key isEqualToString:@"inputStartRecord"])
         return @{QCPortAttributeNameKey: @"Start Record",
                  QCPortAttributeDefaultValueKey: @NO};
-    if ([key isEqualToString:@"inputRecordTime"])
-        return @{QCPortAttributeNameKey: @"Record Time",
-                 QCPortAttributeDefaultValueKey: @10.0};
+    if ([key isEqualToString:@"inputLanguage"])
+        return @{QCPortAttributeNameKey: @"Langugae",
+                 QCPortAttributeDefaultValueKey: @"ru-RU"};
     
     if ([key isEqualToString:@"outputRecognisedString"])
         return @{QCPortAttributeNameKey: @"Recognised String",
@@ -149,7 +149,6 @@ NSTimeInterval _recordStartedAtTimeInterval;
         {
             // rising edge
             // start recording
-            double recordTime = self.inputRecordTime;
             
             NSTimeInterval startTime = time;
             
@@ -168,7 +167,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
                 self.needStop = NO;
                 [self.stopCondition unlock];
 
-                [self startRecognition:@"ru-RU" atTime:startTime];
+                [self startRecognition:self.inputLanguage atTime:startTime];
 
             }
                 

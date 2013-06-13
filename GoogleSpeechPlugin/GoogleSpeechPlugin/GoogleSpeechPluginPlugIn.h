@@ -15,7 +15,7 @@
 //@property (copy) NSString* outputBar;
 
 @property BOOL inputStartRecord;
-@property double inputRecordTime;
+@property (copy) NSString* inputLanguage;
 
 @property (copy) NSString* outputRecognisedString;
 @property double outputRecognitionConfidence;

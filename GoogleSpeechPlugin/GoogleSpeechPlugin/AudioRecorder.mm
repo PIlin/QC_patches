@@ -49,7 +49,7 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
         {
             pcm[i] = *(int16_t*)((char*)inBuffer->mAudioData + b);
         }
-        sprec_flac_feed_encoder(userData.flac_encoder, pcm, i);
+        sprec_flac_feed_encoder(userData.flac_encoder, pcm, i/2);
         
         // if we're not stopping, re-enqueue the buffe so that it gets filled again
         // TODO: unprotected access to cond var. It's only bool so it's should be ok. And we flush all the buffers after the need_stop is set to the YES.

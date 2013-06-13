@@ -318,7 +318,9 @@ NSTimeInterval _recordStartedAtTimeInterval;
 
 - (void)stopRecognition
 {
-    [_recorder stopRecording];
+    NSData* flacData = [_recorder stopRecording];
+    
+    NSLog(@"got flac data size = %lu", (unsigned long)flacData.length);
 }
 
 

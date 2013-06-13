@@ -15,4 +15,6 @@
 
 - (NSData*)stopRecording;
 
++ (uint32_t)sampleRate;
+
 @end

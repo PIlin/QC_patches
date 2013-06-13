@@ -366,4 +366,9 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
 }
 
 
++ (uint32_t)sampleRate
+{
+    return SAMPLE_RATE;
+}
+
 @end

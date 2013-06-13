@@ -15,61 +15,6 @@
 
 #import "AudioRecorder.h"
 
-
-static struct sprec_result *recognize_file(const char *filename, char const* lang, uint32_t samplerate)
-{
-    int err;
-    char* buf;
-    int len;
-    struct sprec_server_response *resp;
-    struct sprec_result *res;
-    char *text;
-    double confidence;
-    
-    const char* flacfile = filename;
-    
-    err = sprec_get_file_contents(flacfile, &buf, &len);
-	if (err != 0)
-	{
-		return NULL;
-	}
-    
-	/**
-	 * ...and send it to Google
-	 */
-	resp = sprec_send_audio_data(buf, len, lang, samplerate);
-	free(buf);
-	if (resp == NULL)
-	{
-		return NULL;
-	}
-    
-    
-	/**
-	 * Get the JSON from the response object,
-	 * then parse it to get the actual text and confidence
-	 */
-	text = sprec_get_text_from_json(resp->data);
-	confidence = sprec_get_confidence_from_json(resp->data);
-	sprec_free_response(resp);
-    
-	/**
-	 * Compose the return value
-	 */
-	res = malloc(sizeof(*res));
-	if (res == NULL)
-	{
-		free(text);
-		return NULL;
-	}
-	
-	res->text = text;
-	res->confidence = confidence;
-	return res;
-}
-
-
-
 #define	kQCPlugIn_Name				@"Google Speech Plugin"
 #define	kQCPlugIn_Description		@"Google Speech Plugin allows to use Google Speech-to-Text API."
 
@@ -127,30 +72,6 @@ NSTimeInterval _recordStartedAtTimeInterval;
         return @{QCPortAttributeNameKey: @"In process",
                  QCPortAttributeDefaultValueKey: @NO};
 
-//    if ([key isEqualToString:@"inputStartRecord"])
-//        return [NSDictionary dictionaryWithObjectsAndKeys:
-//                @"Start Record", QCPortAttributeNameKey,
-//                NO, QCPortAttributeDefaultValueKey, nil];
-//    if ([key isEqualToString:@"inputRecordTime"])
-//        return [NSDictionary dictionaryWithObjectsAndKeys:
-//                @"Record Time", QCPortAttributeNameKey,
-//                @10.0, QCPortAttributeDefaultValueKey, nil];
-//
-//    if ([key isEqualToString:@"outputRecognisedString"])
-//        return [NSDictionary dictionaryWithObjectsAndKeys:
-//                @"Recognised String", QCPortAttributeNameKey,
-//                @"", QCPortAttributeDefaultValueKey, nil];
-//    if ([key isEqualToString:@"outputRecognitionConfidence"])
-//        return [NSDictionary dictionaryWithObjectsAndKeys:
-//                @"Confidence", QCPortAttributeNameKey,
-//                @0.0, QCPortAttributeDefaultValueKey, nil];
-//    if ([key isEqualToString:@"outputInProcess"])
-//        return [NSDictionary dictionaryWithObjectsAndKeys:
-//                @"In process", QCPortAttributeNameKey,
-//                NO, QCPortAttributeDefaultValueKey, nil];
-
-    
-    
 	return nil;
 }
 
@@ -288,28 +209,6 @@ NSTimeInterval _recordStartedAtTimeInterval;
 
 #pragma mark Recognition implementation
 
-//- (void)startRecognitionWithTime:(double)recordTime startedAtTime:(NSTimeInterval)time
-//{
-//    
-//    NSString* resText = nil;
-//    double resConf = 0;
-//    
-////    [self recognise_file:@"/Users/pavel/voice_records/rp-1.flac"
-////              resultText:&resText resultConfidence:&resConf];
-//    
-////    [self recogniseFromMicDuration:recordTime
-////                        resultText:&resText
-////                  resultConfidence:&resConf];
-//
-//    [self recognizeFromMicresultText:&resText resultConfidence:&resConf];
-//    
-////    resConf = 100;
-////    resText = @"asdfasfdsadfsdf";
-////    
-////    sleep(4);
-//    
-//    [self applyRecognition:resText withConfidence:resConf startedAtTime:time];
-//}
 
 - (void)startRecognition
 {
@@ -318,58 +217,34 @@ NSTimeInterval _recordStartedAtTimeInterval;
 
 - (void)stopRecognition
 {
-    NSData* flacData = [_recorder stopRecording];
-    
-    NSLog(@"got flac data size = %lu", (unsigned long)flacData.length);
-}
-
-
--(void)recognise_file:(NSString*)fileName resultText:(NSString**)resultString resultConfidence:(double*)resultConfidence
-{
-    struct sprec_result* res = recognize_file([fileName UTF8String], "en-EN", 48000);
-    
-    NSLog(@"result: %s (%lf)", res->text, res->confidence);
-    
-    *resultConfidence = res->confidence;
-    *resultString = [NSString stringWithUTF8String:res->text];
-    
-    free(res);
-}
-
--(void) recogniseFromMicDuration:(double)duration resultText:(NSString**)resultString  resultConfidence:(double*)resultConfidence
-{
-    struct sprec_result* res = sprec_recognize_sync("ru-RU", duration);
-    
-    *resultConfidence = res->confidence;
-    *resultString = [NSString stringWithUTF8String:res->text];
-    
-    NSLog(@"result: %@ (%lf)", *resultString, *resultConfidence);
-    
-    sprec_result_free(res);
-    
-    
-}
-
-- (void)applyRecognition:(NSString*)text withConfidence:(double)confidence startedAtTime:(NSTimeInterval)time
-{
-    @synchronized(self) {
+    dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_async(queue, ^{
         
-        if (time != _recordStartedAtTimeInterval)
-        {
-            NSLog(@"task is outdated. Started at %lf, current started at %lf",
-                  time, _recordStartedAtTimeInterval);
-            return;
-        }
-    
-        if (!self.recognitionFinished)
-        {
-            _recognisedString = [text copy];
-            _recognisedConfidence = confidence;
-            
-            self.recognitionFinished = YES;
+        NSData* flacData = [_recorder stopRecording];
+        NSLog(@"got flac data size = %lu", (unsigned long)flacData.length);
+        
+        struct sprec_result* res = sprec_recognize_audio_sync(flacData.bytes, flacData.length, [AudioRecorder sampleRate], "ru-RU");
+        
+        NSString* text = [NSString stringWithUTF8String:res->text];
+        NSLog(@"result: %@ (%lf)", text, res->confidence);
+        
+        @synchronized(self) {
+        
+            if (!self.recognitionFinished)
+            {
+                self.recognisedString = text;
+                self.recognisedConfidence = res->confidence;
+                
+                self.recognitionFinished = YES;
+            }
+                
         }
         
-    }
+        sprec_result_free(res);
+    });
+    
+    
 }
+
 
 @end

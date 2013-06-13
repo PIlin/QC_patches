@@ -33,6 +33,8 @@
 		E9B115BD1769F06B00DAE376 /* libsprec.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E9B11588176636E000DAE376 /* libsprec.dylib */; };
 		E9B115BE1769F06B00DAE376 /* libjsonz.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E9B11586176636D800DAE376 /* libjsonz.dylib */; };
 		E9B115BF1769F1E600DAE376 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B115971767838D00DAE376 /* AudioToolbox.framework */; };
+		E9B115C21769FBC100DAE376 /* MemoryStream.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B115C11769FBC100DAE376 /* MemoryStream.m */; };
+		E9B115C31769FBC100DAE376 /* MemoryStream.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B115C11769FBC100DAE376 /* MemoryStream.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -90,6 +92,8 @@
 		E9B115AB1769F01E00DAE376 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E9B115AC1769F01E00DAE376 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E9B115AF1769F01E00DAE376 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		E9B115C01769FBC000DAE376 /* MemoryStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryStream.h; sourceTree = "<group>"; };
+		E9B115C11769FBC100DAE376 /* MemoryStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MemoryStream.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +174,8 @@
 				E9B11578176632AC00DAE376 /* Supporting Files */,
 				E9B1158D1767745900DAE376 /* AudioRecorder.h */,
 				E9B1158E1767745900DAE376 /* AudioRecorder.mm */,
+				E9B115C01769FBC000DAE376 /* MemoryStream.h */,
+				E9B115C11769FBC100DAE376 /* MemoryStream.m */,
 			);
 			path = GoogleSpeechPlugin;
 			sourceTree = "<group>";
@@ -331,6 +337,7 @@
 				E9B1158F1767745900DAE376 /* AudioRecorder.mm in Sources */,
 				E9B1159217677BD700DAE376 /* CAXException.cpp in Sources */,
 				E9B1159617677C7800DAE376 /* CADebugMacros.cpp in Sources */,
+				E9B115C21769FBC100DAE376 /* MemoryStream.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,6 +350,7 @@
 				E9B115B91769F03900DAE376 /* AudioRecorder.mm in Sources */,
 				E9B115A61769F01E00DAE376 /* main.m in Sources */,
 				E9B115AD1769F01E00DAE376 /* AppDelegate.m in Sources */,
+				E9B115C31769FBC100DAE376 /* MemoryStream.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

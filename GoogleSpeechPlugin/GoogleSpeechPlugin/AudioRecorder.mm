@@ -14,6 +14,8 @@
 
 #import <sprec/flac_encoder.h>
 
+#import "MemoryStream.h"
+
 #define NUMBER_RECORD_BUFFERS 3
 
 
@@ -69,7 +71,7 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
 
 @property (strong) NSCondition* stateCondition;
 
-@property (strong) NSOutputStream* flacStream;
+@property (strong) MemoryStream* flacStream;
 @property (strong) NSData* flacData;
 
 @end
@@ -90,17 +92,23 @@ static int flac_stream_write_callback(struct sprec_flac_encoder_t* encoder, cons
 }
 
 
-//static int flac_stream_seek_callback(struct sprec_flac_encoder_t* encoder, uint64_t offset, void* user_data)
-//{
-//    AudioRecorder* rec = (AudioRecorder*)user_data;
-//    
-//    [rec.flacData set
-//}
-//
-//static int flac_stream_tell_callback(struct sprec_flac_encoder_t* encoder, uint64_t* offset, void* user_data)
-//{
-//    AudioRecorder* rec = (AudioRecorder*)user_data;
-//}
+static int flac_stream_seek_callback(struct sprec_flac_encoder_t* encoder, uint64_t offset, void* user_data)
+{
+    AudioRecorder* rec = (__bridge AudioRecorder*)user_data;
+    
+    [rec.flacStream seek:offset];
+    
+    return 0;
+}
+
+static int flac_stream_tell_callback(struct sprec_flac_encoder_t* encoder, uint64_t* offset, void* user_data)
+{
+    AudioRecorder* rec = (__bridge AudioRecorder*)user_data;
+
+    *offset = [rec.flacStream tell];
+    
+    return 0;
+}
 
 
 
@@ -206,9 +214,9 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
         
         @autoreleasepool {
 
-            self.flacStream = [[NSOutputStream alloc] initToMemory];
-            [_flacStream setDelegate:self];
-            [_flacStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+            self.flacStream = [[MemoryStream alloc] init];
+//            [_flacStream setDelegate:self];
+//            [_flacStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
             [_flacStream open];
             
             sprec_flac_encoder_t* flac_encoder = sprec_flac_create_encoder(SAMPLE_RATE, CHANNELS, BIT_DEPTH);
@@ -218,8 +226,8 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
                 void* user_data = (__bridge  void*)self;
                 int res = sprec_flac_bind_encoder_to_stream(flac_encoder,
                                                             flac_stream_write_callback,
-                                                            /*flac_stream_seek_callback*/ NULL,
-                                                            /*flac_stream_tell_callback*/ NULL,
+                                                            flac_stream_seek_callback /*NULL*/,
+                                                            flac_stream_tell_callback /*NULL*/,
                                                             user_data);
                 if (!res)
                 {

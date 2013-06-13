@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@interface AudioRecorder : NSObject
+@interface AudioRecorder : NSObject<NSStreamDelegate>
 
 
 - (BOOL)startRecording;
 
-- (void)stopRecording;
+- (NSData*)stopRecording;
 
 @end

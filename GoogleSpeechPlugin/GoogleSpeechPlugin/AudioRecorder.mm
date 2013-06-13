@@ -12,16 +12,24 @@
 
 #import "CAXException.h"
 
+#import <sprec/flac_encoder.h>
+
 #define NUMBER_RECORD_BUFFERS 3
 
 
 typedef struct RecorderUserData {
     Boolean                     need_stop;
     Boolean                     running;
+    sprec_flac_encoder_t* flac_encoder;
 } RecorderUserData;
 
 
+static const uint32_t SAMPLE_RATE = 16000;
+static const uint16_t BIT_DEPTH = 16;
+static const uint16_t CHANNELS = 2;
 
+
+static const size_t SAMPLES_IN_BUFFER = SAMPLE_RATE/2;
 
 
 static void inputBufferHandler(	void* inUserData,
@@ -32,6 +40,16 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
     try
     {
         NSLog(@"inputBufferHandler buffer = %p", inBuffer);
+        
+        
+        static int32_t pcm[CHANNELS * SAMPLES_IN_BUFFER];
+        
+        uint32_t i = 0;
+        for (size_t b = 0; b < inBuffer->mAudioDataByteSize; ++i, b += sizeof(int16_t))
+        {
+            pcm[i] = *(int16_t*)((char*)inBuffer->mAudioData + b);
+        }
+        sprec_flac_feed_encoder(userData.flac_encoder, pcm, i);
         
         // if we're not stopping, re-enqueue the buffe so that it gets filled again
         // TODO: unprotected access to cond var. It's only bool so it's should be ok. And we flush all the buffers after the need_stop is set to the YES.
@@ -45,17 +63,50 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
     }
 }
 
-
 @interface AudioRecorder ()
 
 @property (strong) NSCondition* stateCondition;
 
+@property (strong) NSOutputStream* flacStream;
+@property (strong) NSData* flacData;
+
 @end
+
+
+static int flac_stream_write_callback(struct sprec_flac_encoder_t* encoder, const uint8_t buffer[], size_t bytes, uint32_t samples, uint32_t current_frame, void* user_data)
+{
+    AudioRecorder* rec = (AudioRecorder*)user_data;
+    
+    if (bytes != [rec.flacStream write:buffer maxLength:bytes])
+    {
+        return 1;
+    }
+    
+    return 0;
+}
+
+
+//static int flac_stream_seek_callback(struct sprec_flac_encoder_t* encoder, uint64_t offset, void* user_data)
+//{
+//    AudioRecorder* rec = (AudioRecorder*)user_data;
+//    
+//    [rec.flacData set
+//}
+//
+//static int flac_stream_tell_callback(struct sprec_flac_encoder_t* encoder, uint64_t* offset, void* user_data)
+//{
+//    AudioRecorder* rec = (AudioRecorder*)user_data;
+//}
+
+
+
+
 
 @implementation AudioRecorder
 
 // Protect access with stateCondition.
 RecorderUserData recorderUserData;
+
 
 static AudioStreamBasicDescription initRecordFormatFromPararm(const uint32_t sample_rate, const uint16_t channels, const uint16_t bit_depth)
 {
@@ -77,11 +128,11 @@ static AudioStreamBasicDescription initRecordFormatFromPararm(const uint32_t sam
 // ____________________________________________________________________________________
 // Determine the size, in bytes, of a buffer necessary to represent the supplied number
 // of seconds of audio data.
-int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueueRef queue, float seconds)
+int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueueRef queue)
 {
 	int packets, frames, bytes;
 	
-	frames = (int)ceil(seconds * format->mSampleRate);
+	frames = SAMPLES_IN_BUFFER;
 	
 	if (format->mBytesPerFrame > 0)
 		bytes = frames * format->mBytesPerFrame;
@@ -130,7 +181,25 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
         else
         {
             memset(&recorderUserData, 0, sizeof(recorderUserData));
-            recorderUserData.running = YES;
+
+            recorderUserData.flac_encoder = sprec_flac_create_encoder(SAMPLE_RATE, CHANNELS, BIT_DEPTH);
+            if (recorderUserData.flac_encoder)
+            {
+                int res = sprec_flac_bind_encoder_to_stream(recorderUserData.flac_encoder,
+                                                            flac_stream_write_callback,
+                                                            /*flac_stream_seek_callback*/ NULL,
+                                                            /*flac_stream_tell_callback*/ NULL,
+                                                            self);
+                if (res)
+                {
+                    sprec_flac_destroy_encoder(recorderUserData.flac_encoder);
+                    recorderUserData.flac_encoder = NULL;
+                }
+                else
+                {
+                    recorderUserData.running = YES;
+                }
+            }
         }
     }
     [_stateCondition unlock];
@@ -140,18 +209,32 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
         return wasError;
     }
     
+    
+    self.flacData = nil;
+    self.flacStream = [[NSOutputStream alloc] initToMemory];
+    [_flacStream setDelegate:self];
+    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0);
     dispatch_async(queue, ^{
         NSLog(@"started recording");
         
+        [_flacStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [_flacStream open];
+        
         [self record];
-        
+
         [_stateCondition lock];
-        
-        recorderUserData.running = NO;
-        recorderUserData.need_stop = NO;
-        [_stateCondition broadcast];
-        
+        {
+            sprec_flac_finish_encoder(recorderUserData.flac_encoder);
+            sprec_flac_destroy_encoder(recorderUserData.flac_encoder);
+            
+            _flacData = [_flacStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey];
+            [_flacStream close];
+            
+            recorderUserData.running = NO;
+            recorderUserData.need_stop = NO;
+            [_stateCondition broadcast];
+        }
         [_stateCondition unlock];
         
         NSLog(@"recording finished");
@@ -160,7 +243,7 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
     return wasError;
 }
 
-- (void)stopRecording
+- (NSData*)stopRecording
 {
     NSLog(@"asking for recording to stop");
     
@@ -174,10 +257,14 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
     }
     [_stateCondition unlock];
     
+    
+    NSData* flac = _flacData;
+    _flacData = nil;
+    
     NSLog(@"recording stopped");
+    
+    return flac;
 }
-
-
 
 - (BOOL)record
 {
@@ -186,13 +273,11 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
 							 beforeDate:[NSDate distantFuture]];
     
     
-    const uint32_t sample_rate = 16000;
-    const uint16_t bit_depth = 16;
-    const uint16_t channels = 2;
+
     
     BOOL wasError = NO;
     
-    AudioStreamBasicDescription recordFormat = initRecordFormatFromPararm(sample_rate, channels, bit_depth);
+    AudioStreamBasicDescription recordFormat = initRecordFormatFromPararm(SAMPLE_RATE, CHANNELS, BIT_DEPTH);
     
     AudioQueueRef queue;
     
@@ -210,7 +295,7 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
             XThrow(1, "returned recordFormat is not supported");
         }
         
-        int bufferByteSize = computeRecordBufferSize(&recordFormat, queue, 0.5f);
+        int bufferByteSize = computeRecordBufferSize(&recordFormat, queue);
         for (int i = 0; i < NUMBER_RECORD_BUFFERS;  ++i)
         {
             AudioQueueBufferRef buffer;

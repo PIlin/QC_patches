@@ -26,6 +26,9 @@
 
 @property (strong) AudioRecorder* recorder;
 
+@property (strong) NSCondition* stopCondition;
+@property BOOL needStop;
+
 @end
 
 
@@ -97,6 +100,9 @@ NSTimeInterval _recordStartedAtTimeInterval;
         _recognisedConfidence = 0;
         _recognitionFinished = NO;
         
+        _stopCondition = [[NSCondition alloc] init];
+        _needStop = NO;
+        
         
         _recorder = [[AudioRecorder alloc] init];
 	}
@@ -157,8 +163,12 @@ NSTimeInterval _recordStartedAtTimeInterval;
                 self.outputInProcess = YES;
                 
                 _recordStartedAtTimeInterval = startTime;
+                
+                [self.stopCondition lock];
+                self.needStop = NO;
+                [self.stopCondition unlock];
 
-                [self startRecognition];
+                [self startRecognition:@"ru-RU" atTime:startTime];
 
             }
                 
@@ -210,40 +220,74 @@ NSTimeInterval _recordStartedAtTimeInterval;
 #pragma mark Recognition implementation
 
 
-- (void)startRecognition
-{
-    [_recorder startRecording];
-}
-
-- (void)stopRecognition
+- (void)startRecognition:(NSString*)language atTime:(NSTimeInterval)atTime
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
+        NSLog(@"started recoginition task for time %lf", atTime);
+        
+        [_recorder startRecording];
+        
+        [self.stopCondition lock];
+        while (!self.needStop)
+            [self.stopCondition wait];
+        
+        self.needStop = NO;
+        [self.stopCondition unlock];
+        
         
         NSData* flacData = [_recorder stopRecording];
         NSLog(@"got flac data size = %lu", (unsigned long)flacData.length);
         
-        struct sprec_result* res = sprec_recognize_audio_sync(flacData.bytes, flacData.length, [AudioRecorder sampleRate], "ru-RU");
         
-        NSString* text = [NSString stringWithUTF8String:res->text];
-        NSLog(@"result: %@ (%lf)", text, res->confidence);
+        NSString* text = nil;
+        double confidence = 0;
+        
+        {
+            struct sprec_result* res = sprec_recognize_audio_sync(flacData.bytes, flacData.length, [AudioRecorder sampleRate], [language cStringUsingEncoding:NSUTF8StringEncoding]);
+            
+            if (res && res->text)
+            {
+                assert(res->text);
+                text = [NSString stringWithUTF8String:res->text];
+                confidence = res->confidence;
+                
+                NSLog(@"result: %@ (%lf)", text, res->confidence);
+            }
+            else
+            {
+                NSLog(@"error recognizing audio");
+            }
+            
+            sprec_result_free(res);
+        }
         
         @synchronized(self) {
-        
+            
             if (!self.recognitionFinished)
             {
                 self.recognisedString = text;
-                self.recognisedConfidence = res->confidence;
+                self.recognisedConfidence = confidence;
                 
                 self.recognitionFinished = YES;
             }
-                
+            
         }
         
-        sprec_result_free(res);
+        
+        
+        NSLog(@"finished recoginition task for time %lf", atTime);
     });
-    
-    
+}
+
+- (void)stopRecognition
+{
+    NSLog(@"stopRecognition");
+    [self.stopCondition lock];
+    self.needStop = YES;
+    [self.stopCondition broadcast];
+    [self.stopCondition unlock];
+    NSLog(@"stopRecognition done");
 }
 
 

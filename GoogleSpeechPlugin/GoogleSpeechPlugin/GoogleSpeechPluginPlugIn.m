@@ -23,6 +23,8 @@
 @property (strong) NSString* recognisedString;
 @property double recognisedConfidence;
 @property BOOL recognitionFinished;
+@property BOOL strictOrdering;
+
 
 @property (strong) AudioRecorder* recorder;
 
@@ -39,6 +41,7 @@
 
 @dynamic inputStartRecord;
 @dynamic inputLanguage;
+@dynamic inputStrictOrdering;
 
 @dynamic outputRecognisedString;
 @dynamic outputRecognitionConfidence;
@@ -64,6 +67,9 @@ NSTimeInterval _recordStartedAtTimeInterval;
     if ([key isEqualToString:@"inputLanguage"])
         return @{QCPortAttributeNameKey: @"Langugae",
                  QCPortAttributeDefaultValueKey: @"ru-RU"};
+    if ([key isEqualToString:@"inputStrictOrdering"])
+        return @{QCPortAttributeNameKey: @"Strict ordering",
+                 QCPortAttributeDefaultValueKey: @YES};
     
     if ([key isEqualToString:@"outputRecognisedString"])
         return @{QCPortAttributeNameKey: @"Recognised String",
@@ -162,7 +168,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
                 self.outputInProcess = YES;
                 
                 _recordStartedAtTimeInterval = startTime;
-                
+
                 [self.stopCondition lock];
                 self.needStop = NO;
                 [self.stopCondition unlock];
@@ -184,6 +190,8 @@ NSTimeInterval _recordStartedAtTimeInterval;
     
     
     @synchronized(self) {
+
+        self.strictOrdering = self.inputStrictOrdering;
         
         if (self.recognitionFinished)
         {
@@ -265,10 +273,13 @@ NSTimeInterval _recordStartedAtTimeInterval;
             
             if (!self.recognitionFinished)
             {
-                self.recognisedString = text;
-                self.recognisedConfidence = confidence;
-                
-                self.recognitionFinished = YES;
+                if (!self.strictOrdering || _recordStartedAtTimeInterval == atTime)
+                {
+                    self.recognisedString = text;
+                    self.recognisedConfidence = confidence;
+                    
+                    self.recognitionFinished = YES;
+                }
             }
             
         }

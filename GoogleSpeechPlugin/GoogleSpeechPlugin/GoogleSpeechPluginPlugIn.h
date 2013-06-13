@@ -16,6 +16,7 @@
 
 @property BOOL inputStartRecord;
 @property (copy) NSString* inputLanguage;
+@property BOOL inputStrictOrdering;
 
 @property (copy) NSString* outputRecognisedString;
 @property double outputRecognitionConfidence;

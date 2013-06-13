@@ -4,3 +4,6 @@
 [submodule "GoogleSpeechPlugin/libjsonz"]
 	path = GoogleSpeechPlugin/libjsonz
 	url = git://github.com/PIlin/libjsonz.git
+[submodule "GoogleSpeechPlugin/libflac"]
+	path = GoogleSpeechPlugin/libflac
+	url = git://git.xiph.org/flac.git

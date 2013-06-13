@@ -58,7 +58,7 @@
 {
 
     
-    NSLog(@"old cur_pos = %llu, data size = %lu", self.currentPosition, self.data.length);
+//    NSLog(@"old cur_pos = %llu, data size = %lu", self.currentPosition, self.data.length);
     
     assert(_data.length >= _currentPosition);
     
@@ -85,7 +85,7 @@
     
     self.currentPosition += len;
     
-    NSLog(@"new cur_pos = %llu, data size = %lu", self.currentPosition, self.data.length);
+//    NSLog(@"new cur_pos = %llu, data size = %lu", self.currentPosition, self.data.length);
     
     return len;
 }

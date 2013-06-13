@@ -75,7 +75,7 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
 
 static int flac_stream_write_callback(struct sprec_flac_encoder_t* encoder, const uint8_t buffer[], size_t bytes, uint32_t samples, uint32_t current_frame, void* user_data)
 {
-    AudioRecorder* rec = (AudioRecorder*)user_data;
+    AudioRecorder* rec = (__bridge AudioRecorder*)user_data;
     
     if (bytes != [rec.flacStream write:buffer maxLength:bytes])
     {
@@ -213,11 +213,12 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
             
             if (flac_encoder)
             {
+                void* user_data = (__bridge  void*)self;
                 int res = sprec_flac_bind_encoder_to_stream(flac_encoder,
                                                             flac_stream_write_callback,
                                                             /*flac_stream_seek_callback*/ NULL,
                                                             /*flac_stream_tell_callback*/ NULL,
-                                                            self);
+                                                            user_data);
                 if (!res)
                 {
                     // flac stream ready

@@ -19,6 +19,20 @@
 		E9B1159217677BD700DAE376 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9B1159017677BD700DAE376 /* CAXException.cpp */; };
 		E9B1159617677C7800DAE376 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9B1159417677C7800DAE376 /* CADebugMacros.cpp */; };
 		E9B115981767838D00DAE376 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B115971767838D00DAE376 /* AudioToolbox.framework */; };
+		E9B1159E1769F01E00DAE376 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B1156F176632AC00DAE376 /* Cocoa.framework */; };
+		E9B115A41769F01E00DAE376 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E9B115A21769F01E00DAE376 /* InfoPlist.strings */; };
+		E9B115A61769F01E00DAE376 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B115A51769F01E00DAE376 /* main.m */; };
+		E9B115AA1769F01E00DAE376 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = E9B115A81769F01E00DAE376 /* Credits.rtf */; };
+		E9B115AD1769F01E00DAE376 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B115AC1769F01E00DAE376 /* AppDelegate.m */; };
+		E9B115B01769F01E00DAE376 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9B115AE1769F01E00DAE376 /* MainMenu.xib */; };
+		E9B115B41769F03900DAE376 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9B1159417677C7800DAE376 /* CADebugMacros.cpp */; };
+		E9B115B61769F03900DAE376 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9B1159017677BD700DAE376 /* CAXException.cpp */; };
+		E9B115B91769F03900DAE376 /* AudioRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9B1158E1767745900DAE376 /* AudioRecorder.mm */; };
+		E9B115BA1769F05000DAE376 /* libjsonz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11586176636D800DAE376 /* libjsonz.dylib */; };
+		E9B115BB1769F05700DAE376 /* libsprec.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11588176636E000DAE376 /* libsprec.dylib */; };
+		E9B115BD1769F06B00DAE376 /* libsprec.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E9B11588176636E000DAE376 /* libsprec.dylib */; };
+		E9B115BE1769F06B00DAE376 /* libjsonz.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E9B11586176636D800DAE376 /* libjsonz.dylib */; };
+		E9B115BF1769F1E600DAE376 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B115971767838D00DAE376 /* AudioToolbox.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -30,6 +44,17 @@
 			files = (
 				E9B1158B1766370200DAE376 /* libsprec.dylib in CopyFiles */,
 				E9B1158C1766370200DAE376 /* libjsonz.dylib in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E9B115BC1769F06500DAE376 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				E9B115BD1769F06B00DAE376 /* libsprec.dylib in CopyFiles */,
+				E9B115BE1769F06B00DAE376 /* libjsonz.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -56,6 +81,15 @@
 		E9B1159417677C7800DAE376 /* CADebugMacros.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CADebugMacros.cpp; path = PublicUtility/CADebugMacros.cpp; sourceTree = SOURCE_ROOT; };
 		E9B1159517677C7800DAE376 /* CADebugMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CADebugMacros.h; path = PublicUtility/CADebugMacros.h; sourceTree = SOURCE_ROOT; };
 		E9B115971767838D00DAE376 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		E9B1159D1769F01E00DAE376 /* test_app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = test_app.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E9B115A11769F01E00DAE376 /* test_app-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "test_app-Info.plist"; sourceTree = "<group>"; };
+		E9B115A31769F01E00DAE376 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		E9B115A51769F01E00DAE376 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E9B115A71769F01E00DAE376 /* test_app-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "test_app-Prefix.pch"; sourceTree = "<group>"; };
+		E9B115A91769F01E00DAE376 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		E9B115AB1769F01E00DAE376 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		E9B115AC1769F01E00DAE376 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		E9B115AF1769F01E00DAE376 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +105,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E9B1159A1769F01E00DAE376 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9B115BF1769F1E600DAE376 /* AudioToolbox.framework in Frameworks */,
+				E9B115BB1769F05700DAE376 /* libsprec.dylib in Frameworks */,
+				E9B115BA1769F05000DAE376 /* libjsonz.dylib in Frameworks */,
+				E9B1159E1769F01E00DAE376 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -81,6 +126,7 @@
 				E9B11588176636E000DAE376 /* libsprec.dylib */,
 				E9B11586176636D800DAE376 /* libjsonz.dylib */,
 				E9B11577176632AC00DAE376 /* GoogleSpeechPlugin */,
+				E9B1159F1769F01E00DAE376 /* test_app */,
 				E9B1156E176632AC00DAE376 /* Frameworks */,
 				E9B1156D176632AC00DAE376 /* Products */,
 			);
@@ -90,6 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				E9B1156C176632AC00DAE376 /* GoogleSpeechPlugin.plugin */,
+				E9B1159D1769F01E00DAE376 /* test_app.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -148,6 +195,29 @@
 			name = PublicUtility;
 			sourceTree = "<group>";
 		};
+		E9B1159F1769F01E00DAE376 /* test_app */ = {
+			isa = PBXGroup;
+			children = (
+				E9B115AB1769F01E00DAE376 /* AppDelegate.h */,
+				E9B115AC1769F01E00DAE376 /* AppDelegate.m */,
+				E9B115AE1769F01E00DAE376 /* MainMenu.xib */,
+				E9B115A01769F01E00DAE376 /* Supporting Files */,
+			);
+			path = test_app;
+			sourceTree = "<group>";
+		};
+		E9B115A01769F01E00DAE376 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E9B115A11769F01E00DAE376 /* test_app-Info.plist */,
+				E9B115A21769F01E00DAE376 /* InfoPlist.strings */,
+				E9B115A51769F01E00DAE376 /* main.m */,
+				E9B115A71769F01E00DAE376 /* test_app-Prefix.pch */,
+				E9B115A81769F01E00DAE376 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -169,6 +239,24 @@
 			productName = GoogleSpeechPlugin;
 			productReference = E9B1156C176632AC00DAE376 /* GoogleSpeechPlugin.plugin */;
 			productType = "com.apple.product-type.bundle";
+		};
+		E9B1159C1769F01E00DAE376 /* test_app */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E9B115B11769F01E00DAE376 /* Build configuration list for PBXNativeTarget "test_app" */;
+			buildPhases = (
+				E9B115991769F01E00DAE376 /* Sources */,
+				E9B1159A1769F01E00DAE376 /* Frameworks */,
+				E9B1159B1769F01E00DAE376 /* Resources */,
+				E9B115BC1769F06500DAE376 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = test_app;
+			productName = test_app;
+			productReference = E9B1159D1769F01E00DAE376 /* test_app.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -192,6 +280,7 @@
 			projectRoot = "";
 			targets = (
 				E9B1156B176632AC00DAE376 /* GoogleSpeechPlugin */,
+				E9B1159C1769F01E00DAE376 /* test_app */,
 			);
 		};
 /* End PBXProject section */
@@ -202,6 +291,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9B1157C176632AC00DAE376 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E9B1159B1769F01E00DAE376 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9B115A41769F01E00DAE376 /* InfoPlist.strings in Resources */,
+				E9B115AA1769F01E00DAE376 /* Credits.rtf in Resources */,
+				E9B115B01769F01E00DAE376 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,6 +334,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E9B115991769F01E00DAE376 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E9B115B41769F03900DAE376 /* CADebugMacros.cpp in Sources */,
+				E9B115B61769F03900DAE376 /* CAXException.cpp in Sources */,
+				E9B115B91769F03900DAE376 /* AudioRecorder.mm in Sources */,
+				E9B115A61769F01E00DAE376 /* main.m in Sources */,
+				E9B115AD1769F01E00DAE376 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -244,6 +355,30 @@
 				E9B1157B176632AC00DAE376 /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		E9B115A21769F01E00DAE376 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E9B115A31769F01E00DAE376 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		E9B115A81769F01E00DAE376 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E9B115A91769F01E00DAE376 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		E9B115AE1769F01E00DAE376 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E9B115AF1769F01E00DAE376 /* en */,
+			);
+			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -348,6 +483,46 @@
 			};
 			name = Release;
 		};
+		E9B115B21769F01E00DAE376 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "test_app/test_app-Prefix.pch";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/libsprec/include\"";
+				INFOPLIST_FILE = "test_app/test_app-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/libjsonz\"",
+					"\"$(SRCROOT)/libsprec\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		E9B115B31769F01E00DAE376 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "test_app/test_app-Prefix.pch";
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/libsprec/include\"";
+				INFOPLIST_FILE = "test_app/test_app-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/libjsonz\"",
+					"\"$(SRCROOT)/libsprec\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				USER_HEADER_SEARCH_PATHS = "";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -365,6 +540,14 @@
 			buildConfigurations = (
 				E9B11584176632AC00DAE376 /* Debug */,
 				E9B11585176632AC00DAE376 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		E9B115B11769F01E00DAE376 /* Build configuration list for PBXNativeTarget "test_app" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E9B115B21769F01E00DAE376 /* Debug */,
+				E9B115B31769F01E00DAE376 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};

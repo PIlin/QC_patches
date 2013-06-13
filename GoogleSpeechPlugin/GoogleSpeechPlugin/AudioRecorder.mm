@@ -26,7 +26,7 @@ typedef struct RecorderUserData {
 
 static const uint32_t SAMPLE_RATE = 16000;
 static const uint16_t BIT_DEPTH = 16;
-static const uint16_t CHANNELS = 2;
+static const uint16_t CHANNELS = 1;
 
 
 static const size_t SAMPLES_IN_BUFFER = SAMPLE_RATE/2;
@@ -49,7 +49,9 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
         {
             pcm[i] = *(int16_t*)((char*)inBuffer->mAudioData + b);
         }
-        sprec_flac_feed_encoder(userData.flac_encoder, pcm, i/2);
+        sprec_flac_feed_encoder(userData.flac_encoder, pcm, i/CHANNELS);
+        
+        NSLog(@"sprec_flac_feed_encoder");
         
         // if we're not stopping, re-enqueue the buffe so that it gets filled again
         // TODO: unprotected access to cond var. It's only bool so it's should be ok. And we flush all the buffers after the need_stop is set to the YES.

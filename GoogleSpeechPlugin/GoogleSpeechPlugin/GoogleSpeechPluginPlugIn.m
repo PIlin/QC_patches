@@ -16,7 +16,11 @@
 #import "AudioRecorder.h"
 
 #define	kQCPlugIn_Name				@"Google Speech Plugin"
-#define	kQCPlugIn_Description		@"Google Speech Plugin allows to use Google Speech-to-Text API."
+const char* description = "Google Speech Plugin allows to use Google Speech-to-Text API.\n"
+"\n"
+"Set input language in format en-US, ru-RU, de-DE, ...\n"
+"Strict ordering option will preserve the order of the queries. If enabled, only last query result will be shown. If disabled, last query result can be replaced by previous, if previous query took more time to process.\n"
+;
 
 @interface GoogleSpeechPluginPlugIn ()
 
@@ -56,7 +60,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
 + (NSDictionary *)attributes
 {
 	// Return a dictionary of attributes describing the plug-in (QCPlugInAttributeNameKey, QCPlugInAttributeDescriptionKey...).
-    return @{QCPlugInAttributeNameKey:kQCPlugIn_Name, QCPlugInAttributeDescriptionKey:kQCPlugIn_Description};
+    return @{QCPlugInAttributeNameKey:kQCPlugIn_Name, QCPlugInAttributeDescriptionKey:@(description)};
 }
 
 + (NSDictionary *)attributesForPropertyPortWithKey:(NSString *)key

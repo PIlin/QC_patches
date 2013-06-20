@@ -582,7 +582,11 @@ function(fixup_bundle_item resolved_embedded_item exepath dirs)
     get_item_key("${pr}" rkey)
 
     if(NOT "${${rkey}_EMBEDDED_ITEM}" STREQUAL "")
-      set(changes ${changes} "-change" "${pr}" "${${rkey}_EMBEDDED_ITEM}")
+
+      STRING(REGEX REPLACE "@executable_path.*/(.*)" "@loader_path/\\1" result "${${rkey}_EMBEDDED_ITEM}" )
+      message("result = ${result}")
+
+      set(changes ${changes} "-change" "${pr}" "${result}")
     else()
       message("warning: unexpected reference to '${pr}'")
     endif()
@@ -595,8 +599,12 @@ function(fixup_bundle_item resolved_embedded_item exepath dirs)
   # Change this item's id and all of its references in one call
   # to install_name_tool:
   #
+  #message("install_name_tool ${changes} -id '${${ikey}_EMBEDDED_ITEM}' '${resolved_embedded_item}'")
+
+  STRING(REGEX REPLACE "@executable_path.*/(.*)" "@loader_path/\\1" result "${${ikey}_EMBEDDED_ITEM}" )
+
   execute_process(COMMAND install_name_tool
-    ${changes} -id "${${ikey}_EMBEDDED_ITEM}" "${resolved_embedded_item}"
+    ${changes} -id "${result}" "${resolved_embedded_item}"
   )
 endfunction()
 

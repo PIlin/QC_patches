@@ -6,4 +6,4 @@ Uses https://github.com/PIlin/QCPatchXcodeTemplate
 - Structure From Iterator.qtz - helper patch, which uses StructFromIterator_Plugin, but doesn't requires additional "Iterator variables" patch to specify iterations count.
 
 - GoogleSpeechPlugin - records audio and recognises text using Google Speech API
-- 
+

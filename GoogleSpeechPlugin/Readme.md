@@ -10,3 +10,5 @@ Building
 Plugin requires libsprec and libjsonz, which are in submodules.
 
 libsprec requeres libFLAC. Package "flac" from homebrew suits perfectly.
+
+Build all required libraries using provided Makefile. 

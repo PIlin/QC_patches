@@ -1,4 +1,4 @@
-all:
-	$(MAKE) -C libjsonz -f Makefile.osx
-	$(MAKE) -C libsprec -f Makefile.osx
+%:
+	$(MAKE) -C libjsonz -f Makefile.osx $@
+	$(MAKE) -C libsprec -f Makefile.osx $@
 

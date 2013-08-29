@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E931B80D17CF6BA60098FED8 /* libsprec.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11588176636E000DAE376 /* libsprec.dylib */; };
+		E931B80E17CF6BA70098FED8 /* libjsonz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11586176636D800DAE376 /* libjsonz.dylib */; };
 		E9B11570176632AC00DAE376 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B1156F176632AC00DAE376 /* Cocoa.framework */; };
 		E9B11572176632AC00DAE376 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11571176632AC00DAE376 /* Quartz.framework */; };
 		E9B1157C176632AC00DAE376 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E9B1157A176632AC00DAE376 /* InfoPlist.strings */; };
@@ -28,8 +30,6 @@
 		E9B115B41769F03900DAE376 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9B1159417677C7800DAE376 /* CADebugMacros.cpp */; };
 		E9B115B61769F03900DAE376 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9B1159017677BD700DAE376 /* CAXException.cpp */; };
 		E9B115B91769F03900DAE376 /* AudioRecorder.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9B1158E1767745900DAE376 /* AudioRecorder.mm */; };
-		E9B115BA1769F05000DAE376 /* libjsonz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11586176636D800DAE376 /* libjsonz.dylib */; };
-		E9B115BB1769F05700DAE376 /* libsprec.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B11588176636E000DAE376 /* libsprec.dylib */; };
 		E9B115BD1769F06B00DAE376 /* libsprec.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E9B11588176636E000DAE376 /* libsprec.dylib */; };
 		E9B115BE1769F06B00DAE376 /* libjsonz.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = E9B11586176636D800DAE376 /* libjsonz.dylib */; };
 		E9B115BF1769F1E600DAE376 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B115971767838D00DAE376 /* AudioToolbox.framework */; };
@@ -114,8 +114,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E9B115BF1769F1E600DAE376 /* AudioToolbox.framework in Frameworks */,
-				E9B115BB1769F05700DAE376 /* libsprec.dylib in Frameworks */,
-				E9B115BA1769F05000DAE376 /* libjsonz.dylib in Frameworks */,
+				E931B80D17CF6BA60098FED8 /* libsprec.dylib in Frameworks */,
+				E931B80E17CF6BA70098FED8 /* libjsonz.dylib in Frameworks */,
 				E9B1159E1769F01E00DAE376 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -550,6 +550,7 @@
 				E9B11585176632AC00DAE376 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E9B115B11769F01E00DAE376 /* Build configuration list for PBXNativeTarget "test_app" */ = {
 			isa = XCConfigurationList;
@@ -558,6 +559,7 @@
 				E9B115B31769F01E00DAE376 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

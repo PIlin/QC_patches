@@ -28,26 +28,31 @@
     
     _recorder = [[AudioRecorder alloc] init];
     
-    [_recorder startRecording];
+    [_recorder startRecording:^(NSData* flacData) {
+        NSLog(@"got ready flac data");
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"got flac data size = %lu", (unsigned long)flacData.length);
+            
+            NSOutputStream* stream = [[NSOutputStream alloc] initToFileAtPath:@"/Users/pavel/code/test_file.flac" append:NO];
+            
+            [stream open];
+            [stream write:flacData.bytes maxLength:flacData.length];
+            [stream close];
+            
+            NSLog(@"file is written");
+        });
+    }];
     
     
     double delayInSeconds = 5.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         
-        NSData* flacData = [_recorder stopRecording];
-        
-        NSLog(@"got flac data size = %lu", (unsigned long)flacData.length);
-        
-        NSOutputStream* stream = [[NSOutputStream alloc] initToFileAtPath:@"/Users/pavel/code/test_file.flac" append:NO];
-        
-        [stream open];
-        [stream write:flacData.bytes maxLength:flacData.length];
-        [stream close];
+        [_recorder stopRecording];
     });
     
     
-    
+    NSLog(@"applicationDidFinishLaunching: finished");
 }
 
 @end

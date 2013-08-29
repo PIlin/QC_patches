@@ -19,10 +19,12 @@
 #define NUMBER_RECORD_BUFFERS 3
 
 
+class FlacEncoder;
+
 typedef struct RecorderUserData {
     Boolean                     need_stop;
     Boolean                     running;
-    sprec_flac_encoder_t* flac_encoder;
+    FlacEncoder*                flac_encoder;
 } RecorderUserData;
 
 
@@ -34,6 +36,130 @@ static const uint16_t CHANNELS = 1;
 static const size_t SAMPLES_IN_BUFFER = SAMPLE_RATE/2;
 
 
+class FlacEncoder
+{
+    static int flac_stream_write_callback(struct sprec_flac_encoder_t* encoder, const uint8_t buffer[], size_t bytes, uint32_t samples, uint32_t current_frame, void* user_data)
+    {
+        FlacEncoder* encWrp = (FlacEncoder*)user_data;
+        
+        if (bytes != [encWrp->flacStream write:buffer maxLength:bytes])
+        {
+            return 1;
+        }
+        
+        //NSLog(@"samples %u write to stream %lu", samples, bytes);
+        
+        return 0;
+    }
+    
+    
+    static int flac_stream_seek_callback(struct sprec_flac_encoder_t* encoder, uint64_t offset, void* user_data)
+    {
+        FlacEncoder* encWrp = (FlacEncoder*)user_data;
+        
+        [encWrp->flacStream seek:offset];
+        
+        return 0;
+    }
+    
+    static int flac_stream_tell_callback(struct sprec_flac_encoder_t* encoder, uint64_t* offset, void* user_data)
+    {
+        FlacEncoder* encWrp = (FlacEncoder*)user_data;
+        
+        *offset = [encWrp->flacStream tell];
+        
+        return 0;
+    }
+
+    
+public:
+    FlacEncoder() :
+        flacStream(nil),
+        flacEncoder(NULL),
+        initOk(NO),
+        resultReceiver(NULL)
+    {
+        flacStream = [[MemoryStream alloc] init];
+        
+        if (!flacStream)
+            return;
+       
+        [flacStream open];
+        
+        flacEncoder = sprec_flac_create_encoder(SAMPLE_RATE, CHANNELS, BIT_DEPTH);
+
+        if (!flacEncoder)
+            return;
+        
+        
+        int res = sprec_flac_bind_encoder_to_stream(flacEncoder,
+                                                    flac_stream_write_callback,
+                                                    flac_stream_seek_callback /*NULL*/,
+                                                    flac_stream_tell_callback /*NULL*/,
+                                                    this);
+
+        if (res)
+            return;
+        
+        initOk = YES;
+    }
+    
+    ~FlacEncoder()
+    {
+        if (initOk)
+            sprec_flac_finish_encoder(flacEncoder);
+        if (flacEncoder)
+            sprec_flac_destroy_encoder(flacEncoder);
+            
+        if (resultReceiver && flacStream)
+        {
+            *resultReceiver = [NSData dataWithData:[flacStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey]];
+        }
+        
+        if (flacStream)
+            [flacStream close];
+    }
+
+    void feed(int32_t* pcm, uint32_t samples)
+    {
+        if (!initOk)
+            return;
+
+        sprec_flac_feed_encoder(flacEncoder, pcm, samples);
+    }
+    
+    void setResultReceiver(NSData* __strong* receiver)
+    {
+        resultReceiver = receiver;
+    }
+
+private:
+    MemoryStream* flacStream;
+    sprec_flac_encoder_t* flacEncoder;
+    BOOL initOk;
+    NSData* __strong* resultReceiver;
+};
+
+
+static BOOL vad_found_voice(RecorderUserData const& userData, AudioQueueBufferRef inBuffer)
+{
+    return YES;
+}
+
+static void feed_encoder(RecorderUserData const& userData, AudioQueueBufferRef inBuffer)
+{
+    static int32_t pcm[CHANNELS * SAMPLES_IN_BUFFER];
+    
+    uint32_t i = 0;
+    for (size_t b = 0; b < inBuffer->mAudioDataByteSize; ++i, b += sizeof(int16_t))
+    {
+        pcm[i] = *(int16_t*)((char*)inBuffer->mAudioData + b);
+    }
+    userData.flac_encoder->feed(pcm, i/CHANNELS);
+    NSLog(@"sprec_flac_feed_encoder");
+}
+
+
 static void inputBufferHandler(	void* inUserData,
 AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStartTime, UInt32 inNumPackets, const AudioStreamPacketDescription *inPacketDesc)
 {
@@ -43,17 +169,8 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
     {
         NSLog(@"inputBufferHandler buffer = %p", inBuffer);
         
-        
-        static int32_t pcm[CHANNELS * SAMPLES_IN_BUFFER];
-        
-        uint32_t i = 0;
-        for (size_t b = 0; b < inBuffer->mAudioDataByteSize; ++i, b += sizeof(int16_t))
-        {
-            pcm[i] = *(int16_t*)((char*)inBuffer->mAudioData + b);
-        }
-        sprec_flac_feed_encoder(userData.flac_encoder, pcm, i/CHANNELS);
-        
-        NSLog(@"sprec_flac_feed_encoder");
+        if (vad_found_voice(userData, inBuffer))
+            feed_encoder(userData, inBuffer);
         
         // if we're not stopping, re-enqueue the buffe so that it gets filled again
         // TODO: unprotected access to cond var. It's only bool so it's should be ok. And we flush all the buffers after the need_stop is set to the YES.
@@ -77,38 +194,6 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
 @end
 
 
-static int flac_stream_write_callback(struct sprec_flac_encoder_t* encoder, const uint8_t buffer[], size_t bytes, uint32_t samples, uint32_t current_frame, void* user_data)
-{
-    AudioRecorder* rec = (__bridge AudioRecorder*)user_data;
-    
-    if (bytes != [rec.flacStream write:buffer maxLength:bytes])
-    {
-        return 1;
-    }
-    
-    //NSLog(@"samples %u write to stream %lu", samples, bytes);
-    
-    return 0;
-}
-
-
-static int flac_stream_seek_callback(struct sprec_flac_encoder_t* encoder, uint64_t offset, void* user_data)
-{
-    AudioRecorder* rec = (__bridge AudioRecorder*)user_data;
-    
-    [rec.flacStream seek:offset];
-    
-    return 0;
-}
-
-static int flac_stream_tell_callback(struct sprec_flac_encoder_t* encoder, uint64_t* offset, void* user_data)
-{
-    AudioRecorder* rec = (__bridge AudioRecorder*)user_data;
-
-    *offset = [rec.flacStream tell];
-    
-    return 0;
-}
 
 
 
@@ -118,7 +203,6 @@ static int flac_stream_tell_callback(struct sprec_flac_encoder_t* encoder, uint6
 
 // Protect access with stateCondition.
 RecorderUserData recorderUserData;
-
 
 static AudioStreamBasicDescription initRecordFormatFromPararm(const uint32_t sample_rate, const uint16_t channels, const uint16_t bit_depth)
 {
@@ -182,6 +266,49 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
     return self;
 }
 
+- (void)prepare_flac_encoding
+{
+//    self.flacStream = [[MemoryStream alloc] init];
+////    [_flacStream setDelegate:self];
+////    [_flacStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//    [_flacStream open];
+//    
+//    recorderUserData.flac_encoder = sprec_flac_create_encoder(SAMPLE_RATE, CHANNELS, BIT_DEPTH);
+//    
+//    if (recorderUserData.flac_encoder)
+//    {
+//        void* user_data = (__bridge  void*)self;
+//        int res = sprec_flac_bind_encoder_to_stream(flac_encoder,
+//                                                    flac_stream_write_callback,
+//                                                    flac_stream_seek_callback /*NULL*/,
+//                                                    flac_stream_tell_callback /*NULL*/,
+//                                                    user_data);
+//        if (!res)
+//        {
+//            // flac stream ready
+//            recorderUserData.flac_encoder_ok = YES;
+//        }
+//    }
+//    
+    recorderUserData.flac_encoder = new FlacEncoder();
+    
+}
+
+- (void)finish_flac_encoding:(BOOL)wasRecordingError
+{
+    [_stateCondition lock];
+    {
+        if (!wasRecordingError && recorderUserData.flac_encoder)
+            recorderUserData.flac_encoder->setResultReceiver(&_flacData);
+        
+        delete recorderUserData.flac_encoder;
+        recorderUserData.flac_encoder = NULL;
+    }
+    [_stateCondition unlock];
+
+    
+}
+
 
 - (BOOL)startRecording
 {
@@ -214,55 +341,21 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
         
         @autoreleasepool {
 
-            self.flacStream = [[MemoryStream alloc] init];
-//            [_flacStream setDelegate:self];
-//            [_flacStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-            [_flacStream open];
+            [self prepare_flac_encoding];
             
-            sprec_flac_encoder_t* flac_encoder = sprec_flac_create_encoder(SAMPLE_RATE, CHANNELS, BIT_DEPTH);
+            BOOL recordingError = [self record];
             
-            if (flac_encoder)
-            {
-                void* user_data = (__bridge  void*)self;
-                int res = sprec_flac_bind_encoder_to_stream(flac_encoder,
-                                                            flac_stream_write_callback,
-                                                            flac_stream_seek_callback /*NULL*/,
-                                                            flac_stream_tell_callback /*NULL*/,
-                                                            user_data);
-                if (!res)
-                {
-                    // flac stream ready
-                    recorderUserData.flac_encoder = flac_encoder;
-                }
-            }
+            [self finish_flac_encoding:recordingError];
             
-            BOOL recordingError = NO;
-            if (recorderUserData.flac_encoder)
-                recordingError = [self record];
-
             [_stateCondition lock];
             {
-                if (recorderUserData.flac_encoder)
-                    sprec_flac_finish_encoder(recorderUserData.flac_encoder);
-                if (flac_encoder)
-                    sprec_flac_destroy_encoder(flac_encoder);
-
-                if (!recordingError)
-                {
-                    self.flacData = [NSData dataWithData:[_flacStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey]];
-                    //NSLog(@"data %p size in stream = %lu", self.flacData, self.flacData.length);
-                }
-                
                 recorderUserData.running = NO;
                 recorderUserData.need_stop = NO;
-                recorderUserData.flac_encoder = NULL;
-                
-                [_flacStream close];
-                _flacStream = nil;
                 
                 [_stateCondition broadcast];
             }
             [_stateCondition unlock];
+
         }
         
         NSLog(@"recording finished");

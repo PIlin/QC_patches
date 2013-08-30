@@ -11,7 +11,9 @@
 
 #include "VAD.h"
 
-
+// This VAD will compute root mean square value of the samples in the packet.
+// If this value is higher than specified threshold, than SimpleVAD decides, that
+// the packet contains voice.
 class SimpleVAD : public VAD
 {
 public:

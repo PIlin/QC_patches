@@ -20,8 +20,15 @@
 #define	kQCPlugIn_Name				@"Google Speech Plugin"
 const char* description = "Google Speech Plugin allows to use Google Speech-to-Text API.\n"
 "\n"
-"Set input language in format en-US, ru-RU, de-DE, ...\n"
-"Strict ordering option will preserve the order of the queries. If enabled, only last query result will be shown. If disabled, last query result can be replaced by previous, if previous query took more time to process.\n"
+"Set input \"Language\" in format en-US, ru-RU, de-DE, ...\n"
+"\"Strict ordering\" option will preserve the order of the queries. If enabled, only last query result will be shown. If disabled, last query result can be replaced by previous, if previous query took more time to process.\n"
+"\"Automatic\" flag will start listening to the sound. If the level is higher than specified Level threshold - plugin will start recording. After the volume level will go below threshold - plugin will send record for the recognition.\n"
+"\"Level threshold\" values are [0, 32768).\n"
+"\n"
+"\"Recognised String\" will contain the string in case of recognition success.\n"
+"\"Confidence\" will contain a level of recognition confidence in case of success. Values are [0.0, 1.0].\n"
+"\"In process\" flag will be set ON, while the listening is active.\n"
+"\"Net queries\" pin will output the count of the active queries to the Google Speech-to-Text service.\n"
 ;
 
 @interface GoogleSpeechPluginPlugIn ()

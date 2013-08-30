@@ -36,7 +36,8 @@ const char* description = "Google Speech Plugin allows to use Google Speech-to-T
 
 @property (strong) NSCondition* stopCondition;
 @property BOOL needStop;
-
+@property BOOL recordingTaskInProcess;
+@property BOOL prevRecordingTaskInProcess;
 @end
 
 
@@ -123,6 +124,9 @@ NSTimeInterval _recordStartedAtTimeInterval;
         _recorder = [[AudioRecorder alloc] init];
         
         _prevAutomaticValue = NO;
+        
+        self.recordingTaskInProcess = NO;
+        self.prevRecordingTaskInProcess = NO;
 	}
 	
 	return self;
@@ -165,9 +169,13 @@ NSTimeInterval _recordStartedAtTimeInterval;
     {
         _prevAutomaticValue = curAutomaticValue;
         if (curAutomaticValue)
+        {
             [self startRecognition:self.inputLanguage atTime:time automatic:YES];
+        }
         else
+        {
             [self stopRecognition];
+        }
         
     }
     
@@ -188,12 +196,12 @@ NSTimeInterval _recordStartedAtTimeInterval;
             
             
             @synchronized(self) {
-                
+
                 self.recognitionFinished = NO;
                 self.recognisedString = @"";
                 self.recognisedConfidence = 0;
                 
-                self.outputInProcess = YES;
+                
                 
                 _recordStartedAtTimeInterval = startTime;
 
@@ -204,7 +212,6 @@ NSTimeInterval _recordStartedAtTimeInterval;
                 [self startRecognition:self.inputLanguage atTime:startTime automatic:NO];
 
             }
-                
         }
         else
         {
@@ -223,12 +230,16 @@ NSTimeInterval _recordStartedAtTimeInterval;
         
         if (self.recognitionFinished)
         {
-            self.outputInProcess = NO;
-            
             self.outputRecognisedString = [self.recognisedString copy];
             self.outputRecognitionConfidence = self.recognisedConfidence;
             
             self.recognitionFinished = NO;
+        }
+        
+        if (self.recordingTaskInProcess != self.prevRecordingTaskInProcess)
+        {
+            self.outputInProcess = self.recordingTaskInProcess;
+            self.prevRecordingTaskInProcess = self.recordingTaskInProcess;
         }
     }
     
@@ -260,6 +271,8 @@ NSTimeInterval _recordStartedAtTimeInterval;
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         NSLog(@"started recoginition task for time %lf", atTime);
+        self.recordingTaskInProcess = YES;
+
         
         struct VAD* vad = NULL;
         if (automatic)
@@ -323,7 +336,8 @@ NSTimeInterval _recordStartedAtTimeInterval;
 
         if (automatic)
             destroyVAD(vad);
-                
+
+        self.recordingTaskInProcess = NO;
         NSLog(@"finished recoginition task for time %lf", atTime);
     });
 }

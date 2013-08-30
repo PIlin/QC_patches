@@ -16,8 +16,9 @@
 
 #import "MemoryStream.h"
 
-#define NUMBER_RECORD_BUFFERS 3
+#include "VAD.h"
 
+#define NUMBER_RECORD_BUFFERS 3
 
 class FlacEncoder;
 
@@ -25,6 +26,7 @@ typedef struct RecorderUserData {
     Boolean                     need_stop;
     Boolean                     running;
     FlacEncoder*                flac_encoder;
+    VAD*                        vad;
 } RecorderUserData;
 
 
@@ -120,7 +122,7 @@ public:
             [flacStream close];
     }
 
-    void feed(int32_t* pcm, uint32_t samples)
+    void feed(int32_t const* pcm, uint32_t samples)
     {
         if (!initOk)
             return;
@@ -140,13 +142,7 @@ private:
     NSData* __strong* resultReceiver;
 };
 
-
-static BOOL vad_found_voice(RecorderUserData const& userData, AudioQueueBufferRef inBuffer)
-{
-    return YES;
-}
-
-static void feed_encoder(RecorderUserData const& userData, AudioQueueBufferRef inBuffer)
+static int32_t const* get_audio_data(AudioQueueBufferRef inBuffer, uint32_t& outSamples)
 {
     static int32_t pcm[CHANNELS * SAMPLES_IN_BUFFER];
     
@@ -155,7 +151,24 @@ static void feed_encoder(RecorderUserData const& userData, AudioQueueBufferRef i
     {
         pcm[i] = *(int16_t*)((char*)inBuffer->mAudioData + b);
     }
-    userData.flac_encoder->feed(pcm, i/CHANNELS);
+    
+    outSamples = i/CHANNELS;
+    return pcm;
+}
+
+static BOOL vad_found_voice(RecorderUserData const& userData, const int32_t *pcm, uint32_t samples)
+{
+    if (userData.vad)
+    {
+        userData.vad->feed(pcm, samples);
+        return userData.vad->has_voice_now();
+    }
+    return YES;
+}
+
+static void feed_encoder(RecorderUserData const& userData, const int32_t *pcm, uint32_t samples)
+{
+    userData.flac_encoder->feed(pcm, samples);
     NSLog(@"sprec_flac_feed_encoder");
 }
 
@@ -167,10 +180,13 @@ AudioQueueRef inAQ, AudioQueueBufferRef inBuffer, const AudioTimeStamp * inStart
     
     try
     {
-        NSLog(@"inputBufferHandler buffer = %p", inBuffer);
+//        NSLog(@"inputBufferHandler buffer = %p", inBuffer);
         
-        if (vad_found_voice(userData, inBuffer))
-            feed_encoder(userData, inBuffer);
+        uint32_t samples;
+        int32_t const* pcm = get_audio_data(inBuffer, samples);
+        
+        if (vad_found_voice(userData, pcm, samples))
+            feed_encoder(userData, pcm, samples);
         
         // if we're not stopping, re-enqueue the buffe so that it gets filled again
         // TODO: unprotected access to cond var. It's only bool so it's should be ok. And we flush all the buffers after the need_stop is set to the YES.
@@ -291,8 +307,14 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
     [_stateCondition unlock];
 }
 
+- (void)restart_flac_encoding
+{
+    NSLog(@"restart_flac_encoding");
+    [self finish_flac_encoding:NO];
+    [self prepare_flac_encoding];
+}
 
-- (BOOL)startRecording:(FinishedFlacDataBlock)on_flac_data
+- (BOOL)startRecordingWithVAD:(VAD*)vad andDataCallback:(FinishedFlacDataBlock)on_flac_data
 {
     self.finishedFlacDataBlock = on_flac_data;
     
@@ -308,6 +330,8 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
         {
             memset(&recorderUserData, 0, sizeof(recorderUserData));
             recorderUserData.running = YES;
+            
+            recorderUserData.vad = vad;
         }
     }
     [_stateCondition unlock];
@@ -334,6 +358,8 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
             {
                 recorderUserData.running = NO;
                 recorderUserData.need_stop = NO;
+                
+                recorderUserData.vad = NULL;
                 
                 [_stateCondition broadcast];
             }
@@ -409,12 +435,21 @@ int computeRecordBufferSize(const AudioStreamBasicDescription *format, AudioQueu
         while (TRUE)
         {
             BOOL stop = NO;
+            BOOL speech_finished = NO;
             [_stateCondition lock];
-            stop = recorderUserData.need_stop;
+            {
+                stop = recorderUserData.need_stop;
+                
+                if (recorderUserData.vad)
+                    speech_finished = recorderUserData.vad->back_edge();
+            }
             [_stateCondition unlock];
             
             if (stop)
                 break;
+            
+            if (speech_finished)
+                [self restart_flac_encoding];
             
             CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, FALSE);
         }

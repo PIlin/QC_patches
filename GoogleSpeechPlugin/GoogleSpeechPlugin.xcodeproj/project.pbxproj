@@ -25,7 +25,7 @@
 		E9B115A41769F01E00DAE376 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = E9B115A21769F01E00DAE376 /* InfoPlist.strings */; };
 		E9B115A61769F01E00DAE376 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B115A51769F01E00DAE376 /* main.m */; };
 		E9B115AA1769F01E00DAE376 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = E9B115A81769F01E00DAE376 /* Credits.rtf */; };
-		E9B115AD1769F01E00DAE376 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B115AC1769F01E00DAE376 /* AppDelegate.m */; };
+		E9B115AD1769F01E00DAE376 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9B115AC1769F01E00DAE376 /* AppDelegate.mm */; };
 		E9B115B01769F01E00DAE376 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = E9B115AE1769F01E00DAE376 /* MainMenu.xib */; };
 		E9B115B41769F03900DAE376 /* CADebugMacros.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9B1159417677C7800DAE376 /* CADebugMacros.cpp */; };
 		E9B115B61769F03900DAE376 /* CAXException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9B1159017677BD700DAE376 /* CAXException.cpp */; };
@@ -35,6 +35,8 @@
 		E9B115BF1769F1E600DAE376 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9B115971767838D00DAE376 /* AudioToolbox.framework */; };
 		E9B115C21769FBC100DAE376 /* MemoryStream.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B115C11769FBC100DAE376 /* MemoryStream.m */; };
 		E9B115C31769FBC100DAE376 /* MemoryStream.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B115C11769FBC100DAE376 /* MemoryStream.m */; };
+		E9D3966617D0D5B100B1CF7E /* SimpleVAD.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9D3966517D0D5B100B1CF7E /* SimpleVAD.mm */; };
+		E9D3966717D0D87100B1CF7E /* SimpleVAD.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9D3966517D0D5B100B1CF7E /* SimpleVAD.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -90,10 +92,13 @@
 		E9B115A71769F01E00DAE376 /* test_app-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "test_app-Prefix.pch"; sourceTree = "<group>"; };
 		E9B115A91769F01E00DAE376 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		E9B115AB1769F01E00DAE376 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		E9B115AC1769F01E00DAE376 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		E9B115AC1769F01E00DAE376 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		E9B115AF1769F01E00DAE376 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		E9B115C01769FBC000DAE376 /* MemoryStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryStream.h; sourceTree = "<group>"; };
 		E9B115C11769FBC100DAE376 /* MemoryStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MemoryStream.m; sourceTree = "<group>"; };
+		E9D3966317D0D54E00B1CF7E /* VAD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VAD.h; path = VAD/VAD.h; sourceTree = "<group>"; };
+		E9D3966417D0D57700B1CF7E /* SimpleVAD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SimpleVAD.h; path = VAD/SimpleVAD.h; sourceTree = "<group>"; };
+		E9D3966517D0D5B100B1CF7E /* SimpleVAD.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = SimpleVAD.mm; path = VAD/SimpleVAD.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +173,7 @@
 		E9B11577176632AC00DAE376 /* GoogleSpeechPlugin */ = {
 			isa = PBXGroup;
 			children = (
+				E9D3966217D0D52E00B1CF7E /* VAD */,
 				E9B1159317677BDF00DAE376 /* PublicUtility */,
 				E9B1157D176632AC00DAE376 /* GoogleSpeechPluginPlugIn.h */,
 				E9B1157E176632AC00DAE376 /* GoogleSpeechPluginPlugIn.m */,
@@ -205,7 +211,7 @@
 			isa = PBXGroup;
 			children = (
 				E9B115AB1769F01E00DAE376 /* AppDelegate.h */,
-				E9B115AC1769F01E00DAE376 /* AppDelegate.m */,
+				E9B115AC1769F01E00DAE376 /* AppDelegate.mm */,
 				E9B115AE1769F01E00DAE376 /* MainMenu.xib */,
 				E9B115A01769F01E00DAE376 /* Supporting Files */,
 			);
@@ -222,6 +228,16 @@
 				E9B115A81769F01E00DAE376 /* Credits.rtf */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E9D3966217D0D52E00B1CF7E /* VAD */ = {
+			isa = PBXGroup;
+			children = (
+				E9D3966317D0D54E00B1CF7E /* VAD.h */,
+				E9D3966417D0D57700B1CF7E /* SimpleVAD.h */,
+				E9D3966517D0D5B100B1CF7E /* SimpleVAD.mm */,
+			);
+			name = VAD;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -338,6 +354,7 @@
 				E9B1159217677BD700DAE376 /* CAXException.cpp in Sources */,
 				E9B1159617677C7800DAE376 /* CADebugMacros.cpp in Sources */,
 				E9B115C21769FBC100DAE376 /* MemoryStream.m in Sources */,
+				E9D3966617D0D5B100B1CF7E /* SimpleVAD.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,8 +366,9 @@
 				E9B115B61769F03900DAE376 /* CAXException.cpp in Sources */,
 				E9B115B91769F03900DAE376 /* AudioRecorder.mm in Sources */,
 				E9B115A61769F01E00DAE376 /* main.m in Sources */,
-				E9B115AD1769F01E00DAE376 /* AppDelegate.m in Sources */,
+				E9B115AD1769F01E00DAE376 /* AppDelegate.mm in Sources */,
 				E9B115C31769FBC100DAE376 /* MemoryStream.m in Sources */,
+				E9D3966717D0D87100B1CF7E /* SimpleVAD.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

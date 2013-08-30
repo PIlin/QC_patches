@@ -15,6 +15,8 @@
 
 #import "AudioRecorder.h"
 
+#import "VAD/VAD_factory.h"
+
 #define	kQCPlugIn_Name				@"Google Speech Plugin"
 const char* description = "Google Speech Plugin allows to use Google Speech-to-Text API.\n"
 "\n"
@@ -46,6 +48,7 @@ const char* description = "Google Speech Plugin allows to use Google Speech-to-T
 @dynamic inputStartRecord;
 @dynamic inputLanguage;
 @dynamic inputStrictOrdering;
+@dynamic inputAutomatic;
 
 @dynamic outputRecognisedString;
 @dynamic outputRecognitionConfidence;
@@ -53,7 +56,7 @@ const char* description = "Google Speech Plugin allows to use Google Speech-to-T
 
 
 
-
+BOOL _prevAutomaticValue;
 BOOL _prevStartRecordValue;
 NSTimeInterval _recordStartedAtTimeInterval;
 
@@ -74,6 +77,9 @@ NSTimeInterval _recordStartedAtTimeInterval;
     if ([key isEqualToString:@"inputStrictOrdering"])
         return @{QCPortAttributeNameKey: @"Strict ordering",
                  QCPortAttributeDefaultValueKey: @YES};
+    if ([key isEqualToString:@"inputAutomatic"])
+        return @{QCPortAttributeNameKey: @"Automatic",
+                 QCPortAttributeDefaultValueKey: @NO};
     
     if ([key isEqualToString:@"outputRecognisedString"])
         return @{QCPortAttributeNameKey: @"Recognised String",
@@ -115,6 +121,8 @@ NSTimeInterval _recordStartedAtTimeInterval;
         
         
         _recorder = [[AudioRecorder alloc] init];
+        
+        _prevAutomaticValue = NO;
 	}
 	
 	return self;
@@ -151,9 +159,25 @@ NSTimeInterval _recordStartedAtTimeInterval;
 	CGLContextObj cgl_ctx = [context CGLContextObj];
 	*/
     
+    BOOL curAutomaticValue = self.inputAutomatic;
+    
+    if (_prevAutomaticValue != curAutomaticValue)
+    {
+        _prevAutomaticValue = curAutomaticValue;
+        if (curAutomaticValue)
+            [self startRecognition:self.inputLanguage atTime:time automatic:YES];
+        else
+            [self stopRecognition];
+        
+    }
+    
+    
+    
+    
+    
     BOOL curStartRecordValue = self.inputStartRecord;
     
-    if (_prevStartRecordValue != curStartRecordValue)
+    if (!curAutomaticValue && _prevStartRecordValue != curStartRecordValue)
     {
         if (curStartRecordValue)
         {
@@ -177,7 +201,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
                 self.needStop = NO;
                 [self.stopCondition unlock];
 
-                [self startRecognition:self.inputLanguage atTime:startTime];
+                [self startRecognition:self.inputLanguage atTime:startTime automatic:NO];
 
             }
                 
@@ -231,13 +255,61 @@ NSTimeInterval _recordStartedAtTimeInterval;
 #pragma mark Recognition implementation
 
 
-- (void)startRecognition:(NSString*)language atTime:(NSTimeInterval)atTime
+- (void)startRecognition:(NSString*)language atTime:(NSTimeInterval)atTime automatic:(BOOL)automatic
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         NSLog(@"started recoginition task for time %lf", atTime);
         
-        [_recorder startRecording];
+        struct VAD* vad = NULL;
+        if (automatic)
+            vad = getSimpleVAD();
+        
+        [_recorder startRecordingWithVAD:vad andDataCallback:^(NSData* flacData) {
+            dispatch_queue_t rq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
+            dispatch_async(rq, ^{
+                NSLog(@"got flac data size = %lu", (unsigned long)flacData.length);
+                
+                
+                NSString* text = nil;
+                double confidence = 0;
+                
+                {
+                    struct sprec_result* res = sprec_recognize_audio_sync(flacData.bytes, flacData.length, [AudioRecorder sampleRate], [language cStringUsingEncoding:NSUTF8StringEncoding]);
+                    
+                    if (res && res->text)
+                    {
+                        assert(res->text);
+                        text = [NSString stringWithUTF8String:res->text];
+                        confidence = res->confidence;
+                        
+                        NSLog(@"result: %@ (%lf)", text, res->confidence);
+                    }
+                    else
+                    {
+                        NSLog(@"error recognizing audio");
+                    }
+                    
+                    sprec_result_free(res);
+                }
+                
+                @synchronized(self) {
+                    
+                    if (!self.recognitionFinished)
+                    {
+                        if (automatic || !self.strictOrdering || _recordStartedAtTimeInterval == atTime)
+                        {
+                            self.recognisedString = text;
+                            self.recognisedConfidence = confidence;
+                            
+                            self.recognitionFinished = YES;
+                        }
+                    }
+                    
+                }
+
+            });
+        }];
         
         [self.stopCondition lock];
         while (!self.needStop)
@@ -247,49 +319,11 @@ NSTimeInterval _recordStartedAtTimeInterval;
         [self.stopCondition unlock];
         
         
-        NSData* flacData = [_recorder stopRecording];
-        NSLog(@"got flac data size = %lu", (unsigned long)flacData.length);
-        
-        
-        NSString* text = nil;
-        double confidence = 0;
-        
-        {
-            struct sprec_result* res = sprec_recognize_audio_sync(flacData.bytes, flacData.length, [AudioRecorder sampleRate], [language cStringUsingEncoding:NSUTF8StringEncoding]);
-            
-            if (res && res->text)
-            {
-                assert(res->text);
-                text = [NSString stringWithUTF8String:res->text];
-                confidence = res->confidence;
+        [_recorder stopRecording];
+
+        if (automatic)
+            destroyVAD(vad);
                 
-                NSLog(@"result: %@ (%lf)", text, res->confidence);
-            }
-            else
-            {
-                NSLog(@"error recognizing audio");
-            }
-            
-            sprec_result_free(res);
-        }
-        
-        @synchronized(self) {
-            
-            if (!self.recognitionFinished)
-            {
-                if (!self.strictOrdering || _recordStartedAtTimeInterval == atTime)
-                {
-                    self.recognisedString = text;
-                    self.recognisedConfidence = confidence;
-                    
-                    self.recognitionFinished = YES;
-                }
-            }
-            
-        }
-        
-        
-        
         NSLog(@"finished recoginition task for time %lf", atTime);
     });
 }

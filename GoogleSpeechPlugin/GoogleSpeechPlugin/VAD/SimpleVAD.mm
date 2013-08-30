@@ -6,20 +6,20 @@
 //  Copyright (c) 2013 Pavel. All rights reserved.
 //
 
-#include "SimpleVAD.h"
+#import "SimpleVAD.h"
 
-#include <algorithm>
-#include <numeric>
-#include <cmath>
+#import <algorithm>
+#import <numeric>
+#import <cmath>
 
-
+#import <Foundation/Foundation.h>
 
 
 void SimpleVAD::feed(int32_t const* pcm, uint32_t samples)
 {
     double rms = rootMeanSquare(pcm, samples);
     
-//    NSLog(@"rms = %lf", rms);
+    NSLog(@"rms = %lf", rms);
     
     was_voice_prev = was_voice_now;
     was_voice_now = rms > threshold;

@@ -36,8 +36,10 @@ const char* description = "Google Speech Plugin allows to use Google Speech-to-T
 
 @property (strong) NSCondition* stopCondition;
 @property BOOL needStop;
-@property BOOL recordingTaskInProcess;
-@property BOOL prevRecordingTaskInProcess;
+@property (atomic) BOOL recordingTaskInProcess;
+@property (atomic) BOOL prevRecordingTaskInProcess;
+@property (atomic) NSUInteger netQueries;
+@property (atomic) NSUInteger prevNetQueries;
 @end
 
 
@@ -54,7 +56,7 @@ const char* description = "Google Speech Plugin allows to use Google Speech-to-T
 @dynamic outputRecognisedString;
 @dynamic outputRecognitionConfidence;
 @dynamic outputInProcess;
-
+@dynamic outputNetworkQueriesInProcess;
 
 
 BOOL _prevAutomaticValue;
@@ -91,6 +93,9 @@ NSTimeInterval _recordStartedAtTimeInterval;
     if ([key isEqualToString:@"outputInProcess"])
         return @{QCPortAttributeNameKey: @"In process",
                  QCPortAttributeDefaultValueKey: @NO};
+    if ([key isEqualToString:@"outputNetworkQueriesInProcess"])
+        return @{QCPortAttributeNameKey: @"Net queries",
+                 QCPortAttributeDefaultValueKey: @0.0};
 
 	return nil;
 }
@@ -127,6 +132,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
         
         self.recordingTaskInProcess = NO;
         self.prevRecordingTaskInProcess = NO;
+        self.netQueries = 0;
 	}
 	
 	return self;
@@ -241,6 +247,12 @@ NSTimeInterval _recordStartedAtTimeInterval;
             self.outputInProcess = self.recordingTaskInProcess;
             self.prevRecordingTaskInProcess = self.recordingTaskInProcess;
         }
+        
+        if (self.netQueries != self.prevNetQueries)
+        {
+            self.prevNetQueries = self.netQueries;
+            self.outputNetworkQueriesInProcess = (double)self.netQueries;
+        }
     }
     
     _prevStartRecordValue = curStartRecordValue;
@@ -287,6 +299,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
                 NSString* text = nil;
                 double confidence = 0;
                 
+                ++self.netQueries;
                 {
                     struct sprec_result* res = sprec_recognize_audio_sync(flacData.bytes, flacData.length, [AudioRecorder sampleRate], [language cStringUsingEncoding:NSUTF8StringEncoding]);
                     
@@ -305,6 +318,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
                     
                     sprec_result_free(res);
                 }
+                --self.netQueries;
                 
                 @synchronized(self) {
                     

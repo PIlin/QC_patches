@@ -22,5 +22,6 @@
 @property (copy) NSString* outputRecognisedString;
 @property double outputRecognitionConfidence;
 @property BOOL outputInProcess;
+@property double outputNetworkQueriesInProcess;
 
 @end

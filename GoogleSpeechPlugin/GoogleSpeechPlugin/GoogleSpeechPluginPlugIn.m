@@ -223,7 +223,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
                 self.needStop = NO;
                 [self.stopCondition unlock];
 
-                [self startRecognition:self.inputLanguage atTime:startTime automatic:NO];
+                [self startRecognition:self.inputLanguage atTime:startTime automatic:NO levelThreshold:0];
 
             }
         }

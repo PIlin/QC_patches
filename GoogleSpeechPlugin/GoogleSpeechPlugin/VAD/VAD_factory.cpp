@@ -10,9 +10,9 @@
 
 #include "SimpleVAD.h"
 
-struct VAD* getSimpleVAD()
+struct VAD* getSimpleVAD(double levelThreshold)
 {
-    return new SimpleVAD;
+    return new SimpleVAD(levelThreshold);
 }
 
 void destroyVAD(VAD* vad)

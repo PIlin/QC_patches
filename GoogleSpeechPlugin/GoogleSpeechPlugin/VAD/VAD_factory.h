@@ -15,7 +15,7 @@ struct VAD;
 extern "C" {
 #endif
 
-struct VAD* getSimpleVAD();
+struct VAD* getSimpleVAD(double levelThreshold);
 
 void destroyVAD(struct VAD* vad);
 

@@ -52,6 +52,7 @@ const char* description = "Google Speech Plugin allows to use Google Speech-to-T
 @dynamic inputLanguage;
 @dynamic inputStrictOrdering;
 @dynamic inputAutomatic;
+@dynamic inputAutomaticLevelThreshold;
 
 @dynamic outputRecognisedString;
 @dynamic outputRecognitionConfidence;
@@ -83,6 +84,9 @@ NSTimeInterval _recordStartedAtTimeInterval;
     if ([key isEqualToString:@"inputAutomatic"])
         return @{QCPortAttributeNameKey: @"Automatic",
                  QCPortAttributeDefaultValueKey: @NO};
+    if ([key isEqualToString:@"inputAutomaticLevelThreshold"])
+        return @{QCPortAttributeNameKey: @"Level threshold",
+                 QCPortAttributeDefaultValueKey: @100.0};
     
     if ([key isEqualToString:@"outputRecognisedString"])
         return @{QCPortAttributeNameKey: @"Recognised String",
@@ -176,7 +180,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
         _prevAutomaticValue = curAutomaticValue;
         if (curAutomaticValue)
         {
-            [self startRecognition:self.inputLanguage atTime:time automatic:YES];
+            [self startRecognition:self.inputLanguage atTime:time automatic:YES levelThreshold:self.inputAutomaticLevelThreshold];
         }
         else
         {
@@ -278,7 +282,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
 #pragma mark Recognition implementation
 
 
-- (void)startRecognition:(NSString*)language atTime:(NSTimeInterval)atTime automatic:(BOOL)automatic
+- (void)startRecognition:(NSString*)language atTime:(NSTimeInterval)atTime automatic:(BOOL)automatic levelThreshold:(double)levelThreshold
 {
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
@@ -288,7 +292,7 @@ NSTimeInterval _recordStartedAtTimeInterval;
         
         struct VAD* vad = NULL;
         if (automatic)
-            vad = getSimpleVAD();
+            vad = getSimpleVAD(levelThreshold);
         
         [_recorder startRecordingWithVAD:vad andDataCallback:^(NSData* flacData) {
             dispatch_queue_t rq = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);

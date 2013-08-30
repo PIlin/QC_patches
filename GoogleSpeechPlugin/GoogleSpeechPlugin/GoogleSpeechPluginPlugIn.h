@@ -18,6 +18,7 @@
 @property (copy) NSString* inputLanguage;
 @property BOOL inputStrictOrdering;
 @property BOOL inputAutomatic;
+@property double inputAutomaticLevelThreshold;
 
 @property (copy) NSString* outputRecognisedString;
 @property double outputRecognitionConfidence;

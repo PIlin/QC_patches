@@ -160,6 +160,10 @@ NSTimeInterval _recordStartedAtTimeInterval;
 	// Called by Quartz Composer when the plug-in instance starts being used by Quartz Composer.
     
     NSLog(@"enableExecution");
+    
+    _prevAutomaticValue = NO;
+    _prevStartRecordValue = NO;
+    _needStop = NO;
 }
 
 - (BOOL)execute:(id <QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary *)arguments
@@ -268,14 +272,19 @@ NSTimeInterval _recordStartedAtTimeInterval;
 {
 	// Called by Quartz Composer when the plug-in instance stops being used by Quartz Composer.
     
+    [self stopRecognition];
     NSLog(@"disableExecution");
 }
 
 - (void)stopExecution:(id <QCPlugInContext>)context
 {
 	// Called by Quartz Composer when rendering of the composition stops: perform any required cleanup for the plug-in.
-    
+
+    [self stopRecognition];
     NSLog(@"stopExecution");
+    
+    // TODO: it's possible that tasks in the queues will stiil be alive after the execution of this method.
+    // They are asked to stop, though.
 }
 
 

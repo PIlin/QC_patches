@@ -11,8 +11,17 @@
 
 struct VAD;
 
+#if defined __cplusplus
+extern "C" {
+#endif
+
 struct VAD* getSimpleVAD();
 
-void destroyVAD(VAD* vad);
+void destroyVAD(struct VAD* vad);
 
+#if defined __cplusplus
+}
+#endif
+    
+    
 #endif

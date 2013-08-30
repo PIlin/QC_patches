@@ -17,11 +17,11 @@ class SimpleVAD : public VAD
 public:
     virtual void feed(int32_t const* pcm, uint32_t samples);
     
-    virtual BOOL has_voice_now();
+    virtual bool has_voice_now();
     
-    virtual BOOL has_voice_prev();
+    virtual bool has_voice_prev();
     
-    virtual BOOL back_edge();
+    virtual bool back_edge();
     
     SimpleVAD(double threshold = 100.0);
     
@@ -30,9 +30,9 @@ private:
     double rootMeanSquare(int32_t const* pcm, uint32_t samples);
 
     
-    BOOL was_voice_now;
-    BOOL was_voice_prev;
-    BOOL edge_called;
+    bool was_voice_now;
+    bool was_voice_prev;
+    bool edge_called;
     double threshold;
 };
 

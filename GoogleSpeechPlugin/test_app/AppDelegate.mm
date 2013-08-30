@@ -10,7 +10,7 @@
 
 #import "AudioRecorder.h"
 
-#import "SimpleVAD.h"
+#import "VAD_factory.h"
 
 @interface AppDelegate ()
 
@@ -29,7 +29,7 @@
     
     
     _recorder = [[AudioRecorder alloc] init];
-    VAD* _vad = new SimpleVAD();
+    VAD* _vad = getSimpleVAD();
     
     [_recorder startRecordingWithVAD:_vad andDataCallback:^(NSData* flacData) {
         NSLog(@"got ready flac data");
@@ -53,13 +53,13 @@
     }];
     
     
-    double delayInSeconds = 500.0;
+    double delayInSeconds = 5.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         
         [_recorder stopRecording];
         
-        delete _vad;
+        destroyVAD(_vad);
     });
     
     

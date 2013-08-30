@@ -16,7 +16,7 @@ typedef void (^ FinishedFlacDataBlock)(NSData*);
 
 // Block on_flac_data will be called for each finished flac record
 // It will be called from recording thread, so do not block it for too long
-- (BOOL)startRecordingWithVAD:(VAD*)vad andDataCallback:(FinishedFlacDataBlock)on_flac_data;
+- (BOOL)startRecordingWithVAD:(struct VAD*)vad andDataCallback:(FinishedFlacDataBlock)on_flac_data;
 
 - (void)stopRecording;
 

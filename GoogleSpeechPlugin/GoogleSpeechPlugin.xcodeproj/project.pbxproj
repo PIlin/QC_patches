@@ -37,6 +37,8 @@
 		E9B115C31769FBC100DAE376 /* MemoryStream.m in Sources */ = {isa = PBXBuildFile; fileRef = E9B115C11769FBC100DAE376 /* MemoryStream.m */; };
 		E9D3966617D0D5B100B1CF7E /* SimpleVAD.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9D3966517D0D5B100B1CF7E /* SimpleVAD.mm */; };
 		E9D3966717D0D87100B1CF7E /* SimpleVAD.mm in Sources */ = {isa = PBXBuildFile; fileRef = E9D3966517D0D5B100B1CF7E /* SimpleVAD.mm */; };
+		E9D3966A17D0DFE500B1CF7E /* VAD_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9D3966917D0DFE500B1CF7E /* VAD_factory.cpp */; };
+		E9D3966B17D0DFE500B1CF7E /* VAD_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E9D3966917D0DFE500B1CF7E /* VAD_factory.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -96,9 +98,11 @@
 		E9B115AF1769F01E00DAE376 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		E9B115C01769FBC000DAE376 /* MemoryStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MemoryStream.h; sourceTree = "<group>"; };
 		E9B115C11769FBC100DAE376 /* MemoryStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MemoryStream.m; sourceTree = "<group>"; };
-		E9D3966317D0D54E00B1CF7E /* VAD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VAD.h; path = VAD/VAD.h; sourceTree = "<group>"; };
-		E9D3966417D0D57700B1CF7E /* SimpleVAD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SimpleVAD.h; path = VAD/SimpleVAD.h; sourceTree = "<group>"; };
-		E9D3966517D0D5B100B1CF7E /* SimpleVAD.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = SimpleVAD.mm; path = VAD/SimpleVAD.mm; sourceTree = "<group>"; };
+		E9D3966317D0D54E00B1CF7E /* VAD.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; name = VAD.h; path = VAD/VAD.h; sourceTree = "<group>"; };
+		E9D3966417D0D57700B1CF7E /* SimpleVAD.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; name = SimpleVAD.h; path = VAD/SimpleVAD.h; sourceTree = "<group>"; };
+		E9D3966517D0D5B100B1CF7E /* SimpleVAD.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = SimpleVAD.mm; path = VAD/SimpleVAD.mm; sourceTree = "<group>"; };
+		E9D3966817D0DF9100B1CF7E /* VAD_factory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VAD_factory.h; path = VAD/VAD_factory.h; sourceTree = "<group>"; };
+		E9D3966917D0DFE500B1CF7E /* VAD_factory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VAD_factory.cpp; path = VAD/VAD_factory.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -236,6 +240,8 @@
 				E9D3966317D0D54E00B1CF7E /* VAD.h */,
 				E9D3966417D0D57700B1CF7E /* SimpleVAD.h */,
 				E9D3966517D0D5B100B1CF7E /* SimpleVAD.mm */,
+				E9D3966817D0DF9100B1CF7E /* VAD_factory.h */,
+				E9D3966917D0DFE500B1CF7E /* VAD_factory.cpp */,
 			);
 			name = VAD;
 			sourceTree = "<group>";
@@ -355,6 +361,7 @@
 				E9B1159617677C7800DAE376 /* CADebugMacros.cpp in Sources */,
 				E9B115C21769FBC100DAE376 /* MemoryStream.m in Sources */,
 				E9D3966617D0D5B100B1CF7E /* SimpleVAD.mm in Sources */,
+				E9D3966A17D0DFE500B1CF7E /* VAD_factory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,6 +376,7 @@
 				E9B115AD1769F01E00DAE376 /* AppDelegate.mm in Sources */,
 				E9B115C31769FBC100DAE376 /* MemoryStream.m in Sources */,
 				E9D3966717D0D87100B1CF7E /* SimpleVAD.mm in Sources */,
+				E9D3966B17D0DFE500B1CF7E /* VAD_factory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

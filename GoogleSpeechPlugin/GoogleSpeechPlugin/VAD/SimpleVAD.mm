@@ -19,38 +19,38 @@ void SimpleVAD::feed(int32_t const* pcm, uint32_t samples)
 {
     double rms = rootMeanSquare(pcm, samples);
     
-    NSLog(@"rms = %lf", rms);
+//    NSLog(@"rms = %lf", rms);
     
     was_voice_prev = was_voice_now;
     was_voice_now = rms > threshold;
     
     if (was_voice_prev && !was_voice_now)
-        edge_called = NO;
+        edge_called = false;
 }
 
-BOOL SimpleVAD::has_voice_now()
+bool SimpleVAD::has_voice_now()
 {
     return was_voice_now;
 }
 
-BOOL SimpleVAD::has_voice_prev()
+bool SimpleVAD::has_voice_prev()
 {
     return was_voice_prev;
 }
 
-BOOL SimpleVAD::back_edge()
+bool SimpleVAD::back_edge()
 {
     if (edge_called)
-        return NO;
-    edge_called = YES;
+        return false;
+    edge_called = true;
     return was_voice_prev && !was_voice_now;
 }
 
     
 SimpleVAD::SimpleVAD(double threshold/* = 100.0*/) :
-    was_voice_now(NO),
-    was_voice_prev(NO),
-    edge_called(YES),
+    was_voice_now(false),
+    was_voice_prev(false),
+    edge_called(true),
     threshold(threshold)
 {}
     

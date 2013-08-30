@@ -79,6 +79,7 @@ public:
         flacStream(nil),
         flacEncoder(NULL),
         initOk(NO),
+        gotData(NO),
         resultReceiver(NULL)
     {
         flacStream = [[MemoryStream alloc] init];
@@ -113,7 +114,7 @@ public:
         if (flacEncoder)
             sprec_flac_destroy_encoder(flacEncoder);
             
-        if (resultReceiver && flacStream)
+        if (resultReceiver && flacStream && gotData)
         {
             *resultReceiver = [NSData dataWithData:[flacStream propertyForKey:NSStreamDataWrittenToMemoryStreamKey]];
         }
@@ -126,6 +127,11 @@ public:
     {
         if (!initOk)
             return;
+        
+        if (!samples)
+            return;
+        
+        gotData = YES;
 
         sprec_flac_feed_encoder(flacEncoder, pcm, samples);
     }
@@ -139,6 +145,7 @@ private:
     MemoryStream* flacStream;
     sprec_flac_encoder_t* flacEncoder;
     BOOL initOk;
+    BOOL gotData;
     NSData* __strong* resultReceiver;
 };
 
